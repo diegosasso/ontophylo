@@ -5,27 +5,6 @@
 ##################################################
 
 
-#' @title MDS general wrapper
-#'
-#' @description Provides a general wrapper for MDS functions.
-#'
-#' @param MD an object to apply MultiScale functions.
-#'
-#' @return The output of a MultiScale function given the method used.
-#'
-#' @author Sergei Tarasov
-#'
-#' @examples
-#' MD_morpho(tree.merge)
-#'
-#' @export
-MD_morpho <- function(MD) {
-
-  UseMethod('MultiScale', MD)
-  
-}
-
-
 #' @title Multidimensional scaling of character states from one stochastic character map
 #'
 #' @description Performs multidimensional scaling (MDS) based on hamming distances among character state vectors from one stochastic character map.
@@ -131,6 +110,27 @@ MultiScale.simmap <- function(tree.merge) {
   class(MD) <- append(class(MD), 'md_1tree')
   
   return(MD)
+  
+}
+
+
+#' @title MDS general wrapper
+#'
+#' @description Provides a general wrapper for MDS functions.
+#'
+#' @param MD an object to apply MultiScale functions.
+#'
+#' @return The output of a MultiScale function given the method used.
+#'
+#' @author Sergei Tarasov
+#'
+#' @examples
+#' MD_morpho(tree.merge)
+#'
+#' @export
+MD_morpho <- function(MD) {
+
+  UseMethod('MultiScale', MD)
   
 }
 
