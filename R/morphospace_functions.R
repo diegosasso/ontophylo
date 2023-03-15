@@ -114,27 +114,6 @@ MultiScale.simmap <- function(tree.merge) {
 }
 
 
-#' @title MDS general wrapper
-#'
-#' @description Provides a general wrapper for MDS functions.
-#'
-#' @param MD an object to apply MultiScale functions.
-#'
-#' @return The output of a MultiScale function given the method used.
-#'
-#' @author Sergei Tarasov
-#'
-#' @examples
-#' MD_morpho(tree.merge)
-#'
-#' @export
-MD_morpho <- function(MD) {
-
-  UseMethod('MultiScale', MD)
-  
-}
-
-
 #' @title add_noise general wrapper
 #'
 #' @description Provides a general wrapper for add_noise functions.
@@ -155,6 +134,28 @@ add_noise <- function(MD, ...) {
   UseMethod('add_noise_MD', MD)
   
 }
+
+
+#' @title MDS general wrapper
+#'
+#' @description Provides a general wrapper for MDS functions.
+#'
+#' @param MD an object to apply MultiScale functions.
+#'
+#' @return The output of a MultiScale function given the method used.
+#'
+#' @author Sergei Tarasov
+#'
+#' @examples
+#' MD_morpho(tree.merge)
+#'
+#' @export
+MD_morpho <- function(MD) {
+
+  UseMethod('MultiScale', MD)
+  
+}
+
 
 # old code #
 # add_noise <- function(MD, add.noise = c(.1,.1)) {
