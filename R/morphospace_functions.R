@@ -22,7 +22,7 @@
 #' MultiScale.simmap(tree.merge, add.noise = NULL)
 #' 
 #' @export
-MultiScale.simmap <- function(tree.merge) {
+MultiScale.simmap <- function(tree.merge, add.noise = NULL) {
   
   cat('MultiScale.simmap')
   # recode states

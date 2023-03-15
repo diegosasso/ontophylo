@@ -4,7 +4,7 @@
 \alias{MultiScale.simmap}
 \title{Multidimensional scaling of character states from one stochastic character map}
 \usage{
-MultiScale.simmap(tree.merge)
+MultiScale.simmap(tree.merge, add.noise = NULL)
 }
 \arguments{
 \item{tree.merge}{simmap object. A stochastic character map after being processed by the discr_Simmap and merge_tree_cat functions.}
