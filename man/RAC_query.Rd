@@ -20,11 +20,11 @@ A named list with character groups.
 Returns a named list aggregating characters under a specified set of terms (e.g., body regions).
 }
 \examples{
-ontology <- HAO
-char_info <- data(HYM)$info
+data("HAO", "hym_annot")
+char_info <- hym_annot[1:2]
+# Query for three anatomical regions.
 terms <- c("head", "mesosoma", "metasoma")
-query <- RAC_query(char_info, ontology, terms)
-query
+query <- RAC_query(char_info, HAO, terms)
 
 }
 \author{

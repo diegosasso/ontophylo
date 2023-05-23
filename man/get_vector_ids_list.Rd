@@ -4,16 +4,16 @@
 \alias{get_vector_ids_list}
 \title{Wrapper for getting vector layer IDs for multiple terms}
 \usage{
-get_vector_ids_list(terms, ONT, GR)
+get_vector_ids_list(terms_list, ONT, GR)
 }
 \arguments{
-\item{terms}{data.frame. A data.frame with ontology terms to get layer IDs for.
-The first column corresponds to the ontology term labels, the second to the ontology IDs.}
-
 \item{ONT}{ontology_index object.}
 
 \item{GR}{data.frame. A data.frame with the picture information. It contains the matches between all ontology term labels and layer IDs in the Picture object.
 The first column corresponds to the ontology term labels, the second to the ontology IDs, and the third to the layer IDs in the Picture object.}
+
+\item{term_list}{list. A named list with ontology terms to get layer IDs for.
+The first column corresponds to the ontology term labels, the second to the ontology IDs.}
 }
 \value{
 A named vector with the layer IDs corresponding to or descending from the ontology term label queried.
@@ -23,9 +23,11 @@ Given an ontology_index object, data.frame with ontology term labels, and data.f
 produces a named vector with layer IDs to be used in the 'make_pic' function.
 }
 \examples{
-GR <- data(HYM_IMG)$info
-ontology <- HAO
-get_vector_ids_list(term = 'HAO:0000349', ontology, GR)
+data("HAO", "hym_graph")
+# Get picture layers from three anatomical regions.
+terms_list <- as.list(c("HAO:0000397", "HAO:0000576", "HAO:0000626"))
+terms_list <- setNames(terms_list, c("head", "mesosoma", "metasoma"))
+get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_graph)
 
 }
 \author{

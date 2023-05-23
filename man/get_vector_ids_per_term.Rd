@@ -22,9 +22,9 @@ Given an ontology_index object, ontology term label, and data.frame with picture
 produces a named vector with layer IDs to be used in the 'make_pic' function.
 }
 \examples{
-GR <- data(HYM_IMG)$info
-ontology <- HAO
-get_vector_ids_per_term(term = 'HAO:0000349', ontology, GR)
+data("HAO", "hym_graph")
+# Get picture layers from head.
+get_vector_ids_per_term(term = "HAO:0000397", ONT = HAO, GR = hym_graph)
 
 }
 \author{

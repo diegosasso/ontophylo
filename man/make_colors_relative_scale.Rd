@@ -20,9 +20,10 @@ A character vector where elements are color IDs and names are the input ontology
 Produces a relative color scale for a given statistic of evolutionary rate.
 }
 \examples{
-#Stat <- setNames(runif(5, 0.1,10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
-#hm.palette <- colorRampPalette(brewer.pal(9, 'Spectral') \%>\% rev, space = 'Lab')
-#cols.maps <- make_colors_relative_scale(Stat, palette = hm.palette(100), lims = c(min(Stat),max(Stat)))
+stat <- setNames(runif(5, 0.1, 10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
+hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
+cols.maps <- make_colors_relative_scale(stat, palette = hm.palette(100), lims = c(min(stat), max(stat)))
+cols.maps
 
 }
 \author{

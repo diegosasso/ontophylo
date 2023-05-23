@@ -16,9 +16,15 @@ A character vector with colors associated with state names.
 Get state colors for ploting stochastic character maps when there many states.
 }
 \examples{
-library("RColorBrewer")
-tree <- data(HYM)$stm[[1]][[1]]
-plotSimmap(tree, get_rough_state_cols(tree),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+data("hym_stm_amalg")
+# Get one sample of stochastic map from head.
+tree <- hym_stm_amalg$head[[5]]
+# Plot one amalgamated stochastic map from head.
+\dontrun{
+
+  phytools::plotSimmap(tree, get_rough_state_cols(tree),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+
+}
 
 }
 \author{

@@ -17,9 +17,22 @@
 #'
 #' @author Sergei Tarasov
 #'
+#' @import dplyr
+#' @importFrom tibble as_tibble
+#' @importFrom purrr set_names
+#' @importFrom stringdist stringdistmatrix
+#'
 #' @examples
-#' MultiScale.simmap(tree.merge, add.noise = c(.5,.5))
-#' MultiScale.simmap(tree.merge, add.noise = NULL)
+#' data("hym_stm_mds")
+#' # Get a sample of 5 amalgamated stochastic maps.
+#' tree_list <- hym_stm_mds
+#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Multidimensional scaling for an arbitrary tree.
+#' \dontrun{
+#'   
+#'   MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = c(0.3,0.3)))
+#'   
+#' }
 #' 
 #' @export
 MultiScale.simmap <- function(tree.merge, add.noise = NULL) {
@@ -107,69 +120,10 @@ MultiScale.simmap <- function(tree.merge, add.noise = NULL) {
   Lines.coor <- bind_cols(L.start, L.end) 
   
   MD <- list(Points = M, Lines = Lines.coor, Edge.map = Ed.all)
-  class(MD) <- append(class(MD), 'md_1tree')
   
   return(MD)
   
 }
-
-
-#' @title add_noise general wrapper
-#'
-#' @description Provides a general wrapper for add_noise functions.
-#'
-#' @param MD an object to apply add_noise functions.
-#' @param ... additional parameters to be passed to add_noise functions.
-#'
-#' @return The output of an add_noise function given the method used.
-#'
-#' @author Sergei Tarasov
-#'
-#' @examples
-#' add_noise(MD, c(0.5, 0.5))
-#'
-#' @export
-add_noise <- function(MD, ...) {
-
-  UseMethod('add_noise_MD', MD)
-  
-}
-
-
-#' @title MDS general wrapper
-#'
-#' @description Provides a general wrapper for MDS functions.
-#'
-#' @param MD an object to apply MultiScale functions.
-#'
-#' @return The output of a MultiScale function given the method used.
-#'
-#' @author Sergei Tarasov
-#'
-#' @examples
-#' MD_morpho(tree.merge)
-#'
-#' @export
-MD_morpho <- function(MD) {
-
-  UseMethod('MultiScale', MD)
-  
-}
-
-
-# old code #
-# add_noise <- function(MD, add.noise = c(.1,.1)) {
-#
-#   if ('tree.id' %in% names(MD$Point))
-#
-#     return(add_noise_MD_list(MD, add.noise))
-#   
-#   if (!('tree.id' %in% names(MD$Point)) )
-#
-#     return(add_noise_MD(MD, add.noise))
-#
-# }
-
 
 
 #' @title Adding noise to MDS from one stochastic character map 
@@ -184,11 +138,25 @@ MD_morpho <- function(MD) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @import dplyr
+#'
 #' @examples
-#' add_noise_MD.md_1tree(MD, c(0.5, 0.5))
+#' data("hym_stm_mds")
+#' # Get a sample of 5 amalgamated stochastic maps.
+#' tree_list <- hym_stm_mds
+#' tree_list <- merge_tree_cat_list(tree_list)
+#' \dontrun{
+#'   
+#'   # Multidimensional scaling for an arbitrary tree.
+#'   MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = NULL))
+#'   
+#'   # Add noise.
+#'   add_noise_MD(MD, c(0.3, 0.3))
+#'   
+#' }
 #'
 #' @export
-add_noise_MD.md_1tree <- function(MD, add.noise) {
+add_noise_MD <- function(MD, add.noise) {
 
   cat('Noise Simmap')
   

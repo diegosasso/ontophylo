@@ -20,10 +20,31 @@ A list of stacked stochastic character maps.
 Wrapper function to perform the final paramo stacking of maps for a set of anatomy ontology terms.
 }
 \examples{
-tree_list <- data(HYM)$stm
-tree_list <- lapply(tree_list, discr_Simmap)
-tree_list <- lapply(tree_list, merge_tree_cat_list)
-paramo.list(query, tree_list, 10)
+char_info <- hym_annot[1:2]
+# Query for three anatomical regions.
+terms <- c("head", "mesosoma", "metasoma")
+query <- RAC_query(char_info, HAO, terms)
+# Select the first three characters for each anatomical region.
+query <- lapply(query, function(x) x[1:3])
+# Subset the list of multiple maps.
+tree_list <- hym_stm[unname(unlist(query))]
+tree_list <- lapply(tree_list, function(x) discr_Simmap_all(x, res = 100))
+tree_list_amalg <- paramo(query, tree_list, ntrees = 100)
+tree_list_amalg <- lapply(tree_list_amalg, function(x) do.call(c,x) )
+# Get one sample of map from head.
+stm_hd <- tree_list_amalg$head[[1]]
+# Get one sample of map from mesosoma.
+stm_ms <- tree_list_amalg$mesosoma[[1]]
+# Get one sample of map from metasoma.
+stm_mt <- tree_list_amalg$metasoma[[1]]
+# Plot one amalgamated stochastic map from each anatomical region.
+\dontrun{
+
+  phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+  phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+  phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+
+}
 
 }
 \author{

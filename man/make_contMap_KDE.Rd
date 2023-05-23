@@ -18,7 +18,20 @@ A 'contMap' object.
 Produces a contMap object for plotting the NHPP.
 }
 \examples{
-NHPP.Map <- make_contMap(tree.discr, Edge.KDE$Maps.mean.norm)
+data("hym_tree", "hym_kde")
+# Get reference tree.
+tree_discr <- discr_Simmap(hym_tree, res = 4000)
+# Get smoothing of normalized edge KDE data for mean rates.
+Edge_KDE <- hym_kde$head
+Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
+# Make contmap nhpp data.
+nhpp_map <- make_contMap_KDE(tree_discr, Edge_KDE_stat)
+# Plot contmap.
+\dontrun{
+
+  phytools::plot.contMap(nhpp_map, lwd = 3, outline = F, legend = F, ftype = "off", plot = F)
+
+}
 
 }
 \author{

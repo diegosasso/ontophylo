@@ -16,8 +16,12 @@ A list with mean ($Mean), standard deviation ($SD), and 95HPD interval ($Q_2.5 a
 Calculates the required statitics for the posterior distribution of number of state changes across all branches of all trees.
 }
 \examples{
-tree.list <- Trees.focal.BRs[[1]]
-posterior_lambda_KDE(tree.list)
+data("hym_stm_amalg")
+# Get a sample of ten stochastic maps from head.
+tree_list <- hym_stm_amalg$head
+tree_list <- merge_tree_cat_list(tree_list[1:10])
+# Calculate posterior poisson statistics.
+posterior_lambda_KDE(tree_list)
 
 }
 \author{

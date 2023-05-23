@@ -19,7 +19,7 @@
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' annot_list <- list(`CHAR:1` = c("HAO:0000933", "HAO:0000958"), `CHAR:2` = c("HAO:0000833", "HAO:0000258"))
+#' annot_list <- list("CH1" = c("HAO:0000933", "HAO:0000958"), "CH2" = c("HAO:0000833", "HAO:0000258"))
 #' list2edges(annot_list)
 #'
 #' @export
@@ -57,9 +57,9 @@ list2edges <- function(annotated.char.list, col_order_inverse = FALSE) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' ontology <- HAO
-#' ontology$terms_selected_id <- list(`CHAR:1` = c("HAO:0000653"), `CHAR:2` = c("HAO:0000653"))
-#' get_descendants_chars(ontology, annotations = "manual", "HAO:0000653")
+#' data("HAO")
+#' HAO$terms_selected_id <- list("CH1" = c("HAO:0000653"), "CH2" = c("HAO:0000653"))
+#' get_descendants_chars(HAO, annotations = "manual", "HAO:0000653")
 #'
 #' @export
 get_descendants_chars <- function(ontology, annotations = "auto", terms, ...) {
@@ -106,11 +106,11 @@ get_descendants_chars <- function(ontology, annotations = "auto", terms, ...) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' ontology <- HAO
-#' char_info <- data(HYM)$info
+#' data("HAO", "hym_annot")
+#' char_info <- hym_annot[1:2]
+#' # Query for three anatomical regions.
 #' terms <- c("head", "mesosoma", "metasoma")
-#' query <- RAC_query(char_info, ontology, terms)
-#' query
+#' query <- RAC_query(char_info, HAO, terms)
 #'
 #' @export
 RAC_query <- function(char_info, ONT, terms) {
@@ -151,9 +151,12 @@ RAC_query <- function(char_info, ONT, terms) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' tree <- data(HYM)$stm[[1]][[1]]
+#' data("hym_stm")
+#' tree <- hym_stm[[1]][[1]]
 #' stm_discr <- discr_Simmap(tree, res = 100)
-#' stm_discr
+#' # Check some arbitrary branch.
+#' tree$maps[[10]]
+#' stm_discr$maps[[10]]
 #'
 #' @export
 discr_Simmap <- function(tree, res) {
@@ -195,9 +198,12 @@ discr_Simmap <- function(tree, res) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' tree_list <- data(HYM)$stm[[1]]
-#' stm_discr_list <- discr_Simmap(tree_list, res = 100)
-#' stm_discr_list
+#' data("hym_stm")
+#' tree_list <- hym_stm[[1]]
+#' stm_discr_list <- discr_Simmap_all(tree_list, res = 100)
+#' # Check some arbitrary branch of some arbitrary tree.
+#' tree_list[[1]]$maps[[10]]
+#' stm_discr_list[[1]]$maps[[10]]
 #'
 #' @export
 discr_Simmap_all <- function(tree, res) {
@@ -234,13 +240,15 @@ discr_Simmap_all <- function(tree, res) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' tree <- data(HYM)$stm[[1]][[1]]
+#' data("hym_stm")
+#' tree <- hym_stm[[1]][[1]]
 #' stm_discr <- discr_Simmap(tree, res = 100)
-#' br <- stm_discr$maps[[50]]
-#' br
-#' merge_branch_cat(br)
-#' stm_discr$maps <- lapply(stm_discr$maps, merge_branch_cat)
-#' plot(stm_discr, setNames(getPalette(length(states)), states))
+#' # Check some arbitrary branch.
+#' br1 <- stm_discr$maps[[50]]
+#' br1
+#' br2 <- merge_branch_cat(br1)
+#' br2
+#' sum(br1) == br2
 #' 
 #' @export
 merge_branch_cat <- function(br) {
@@ -277,10 +285,16 @@ merge_branch_cat <- function(br) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' tree <- data(HYM)$stm[[1]][[1]]
-#' tree <- discr_Simmap(tree)
+#' data("hym_stm")
+#' tree <- hym_stm[[1]][[1]]
+#' tree <- discr_Simmap(tree, res = 100)
 #' stm_merg <- merge_tree_cat(tree)
-#' stm_merg
+#' # Check some arbitrary branch.
+#' br1 <- tree$maps[[50]]
+#' br1
+#' br2 <- stm_merg$maps[[50]]
+#' br2
+#' sum(br1) == br2
 #'
 #' @export 
 merge_tree_cat <- function(tree) {
@@ -303,10 +317,17 @@ merge_tree_cat <- function(tree) {
 #' @author Diego S. Porto
 #'
 #' @examples
-#' tree_list <- data(HYM)$stm[[1]]
-#' tree_list <- discr_Simmap(tree_list)
+#' data("hym_stm")
+#' tree_list <- hym_stm[[1]]
+#' tree_list <- discr_Simmap_all(tree_list, res = 100)
 #' stm_merg_list <- merge_tree_cat_list(tree_list)
-#' stm_merg_list
+#' stm_merg_list <- do.call(c, stm_merg_list)
+#' # Check some arbitrary branch of some arbitrary tree.
+#' br1 <- tree_list[[1]]$maps[[50]]
+#' br1
+#' br2 <- stm_merg_list[[1]]$maps[[50]]
+#' br2
+#' sum(br1) == br2
 #'
 #' @export
 merge_tree_cat_list <- function(tree.list) {
@@ -369,12 +390,20 @@ stack2 <- function(x,y) {
 #' @return A list of stacked stochastic character maps.
 #'
 #' @author Sergei Tarasov
-#'
+#' 
 #' @examples
-#' tree_list <- data(HYM)$stm[[1]]
-#' tree_list <- discr_Simmap(tree_list)
-#' tree_list <- merge_tree_cat_list(tree_list)
-#' paramo.list(cc, tree_list, 10)
+#' data("hym_stm")
+#' # Select the first five characters.
+#' tree_list <- hym_stm[1:5]
+#' tree_list <- lapply(tree_list, function(x) discr_Simmap_all(x, res = 100))
+#' tree_list_amalg <- paramo.list(names(tree_list), tree_list, ntrees = 100)
+#' tree_list_amalg <- do.call(c, tree_list_amalg)
+#' # Plot one amalgamated stochastic map.
+#' \dontrun{
+#' 
+#'   phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#' 
+#' }
 #'
 #' @export
 paramo.list <- function(cc, tree.list, ntrees = 1) {
@@ -415,10 +444,31 @@ paramo.list <- function(cc, tree.list, ntrees = 1) {
 #' @author Diego S. Porto
 #'
 #' @examples
-#' tree_list <- data(HYM)$stm
-#' tree_list <- lapply(tree_list, discr_Simmap)
-#' tree_list <- lapply(tree_list, merge_tree_cat_list)
-#' paramo.list(query, tree_list, 10)
+#' char_info <- hym_annot[1:2]
+#' # Query for three anatomical regions.
+#' terms <- c("head", "mesosoma", "metasoma")
+#' query <- RAC_query(char_info, HAO, terms)
+#' # Select the first three characters for each anatomical region.
+#' query <- lapply(query, function(x) x[1:3])
+#' # Subset the list of multiple maps.
+#' tree_list <- hym_stm[unname(unlist(query))]
+#' tree_list <- lapply(tree_list, function(x) discr_Simmap_all(x, res = 100))
+#' tree_list_amalg <- paramo(query, tree_list, ntrees = 100)
+#' tree_list_amalg <- lapply(tree_list_amalg, function(x) do.call(c,x) )
+#' # Get one sample of map from head.
+#' stm_hd <- tree_list_amalg$head[[1]]
+#' # Get one sample of map from mesosoma.
+#' stm_ms <- tree_list_amalg$mesosoma[[1]]
+#' # Get one sample of map from metasoma.
+#' stm_mt <- tree_list_amalg$metasoma[[1]]
+#' # Plot one amalgamated stochastic map from each anatomical region.
+#' \dontrun{
+#' 
+#'   phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#'   phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#'   phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#' 
+#' }
 #'
 #' @export
 paramo <- function(rac_query, tree.list, ntrees) {
@@ -452,10 +502,18 @@ paramo <- function(rac_query, tree.list, ntrees) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @import RColorBrewer
+#'
 #' @examples
-#' library("RColorBrewer")
-#' tree <- data(HYM)$stm[[1]][[1]]
-#' plotSimmap(tree, get_rough_state_cols(tree),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#' data("hym_stm_amalg")
+#' # Get one sample of stochastic map from head.
+#' tree <- hym_stm_amalg$head[[5]]
+#' # Plot one amalgamated stochastic map from head.
+#' \dontrun{
+#' 
+#'   phytools::plotSimmap(tree, get_rough_state_cols(tree),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#' 
+#' }
 #'
 #' @export
 get_rough_state_cols <- function(tree) {

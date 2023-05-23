@@ -20,7 +20,23 @@ A list with the distribution of the selected statistic for each edge.
 Produces a posterior distribution from a given list of statistics calculated with the 'posterior_lambda_KDE' function.
 }
 \examples{
-make_postPois_KDE(Edge.KDE.stat, lambda.post, lambda.post.stat = 'Mean')
+data("hym_stm_amalg", "hym_kde")
+# Get a sample of ten stochastic maps from head.
+tree_list <- hym_stm_amalg$head[1:10]
+tree_list <- merge_tree_cat_list(tree_list)
+# Calculate posterior poisson statistics.
+lambda_post <- posterior_lambda_KDE(tree_list)
+# Get smoothing of normalized edge KDE data for mean rates.
+Edge_KDE <- hym_kde$head
+Edge_KDE_stat <- Edge_KDE$Maps.mean.loess.norm
+# Make posterior poisson distribution.
+Edge_KDE$lambda.mean <- make_postPois_KDE(Edge_KDE_stat, lambda_post, lambda.post.stat = "Mean")
+# Check posterior poisson of some arbitrary branch.
+\dontrun{
+
+  plot(density(Edge_KDE$lambda.mean[[5]]), main = "", xlab = "Rates")
+
+}
 
 }
 \author{

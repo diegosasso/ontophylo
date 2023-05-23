@@ -18,7 +18,17 @@ A list with the loess smoothing calculated for each edge.
 Calculates loess smoothing for the unnormalized Markov KDE obtained from the 'estimate_edge_KDE_Markov_kernel_unnorm' function.
 }
 \examples{
-edge.KDE$Maps.mean.loess <- loess_smooting_KDE(tree.discr, edge.KDE)
+data("hym_kde", "hym_tree")
+# Get reference tree.
+tree_discr <- discr_Simmap(hym_tree, res = 4000)
+# Get non-normalized and normalized edge KDE data.
+Edge_KDE <- hym_kde$head
+# Calculate smoothing of edge KDE data.
+Edge_KDE$Maps.mean.loess <- suppressWarnings(loess_smoothing_KDE(tree_discr, Edge_KDE))
+# Check smoothing of KDE data for normalized mean rates from an arbitrary branch.
+Edge_KDE$Maps.mean.loess.norm[[5]]
+# Check smoothing of KDE data for non-normalized mean rates from an arbitrary branch.
+Edge_KDE$Maps.mean.loess[[5]]
 
 }
 \author{

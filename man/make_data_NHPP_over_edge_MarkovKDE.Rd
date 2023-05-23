@@ -17,10 +17,8 @@ A numeric vector with changing times between states for a given edge.
 \description{
 Gets data on changing times between states for a given edge of a given sample of trees for the Markov kernel density estimator (KDE).
 }
-\examples{
-make_data_NHPP_over_edge_MarkovKDE(Tb.trees, Focal.Edge = 5)
-
-}
 \author{
 Sergei Tarasov
+
+Internal function. Not exported.
 }

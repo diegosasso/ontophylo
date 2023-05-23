@@ -16,13 +16,15 @@ A numeric or character vector with merged identical bins.
 Merges identical state bins over the same branch in the discretized stochastic map.
 }
 \examples{
-tree <- data(HYM)$stm[[1]][[1]]
+data("hym_stm")
+tree <- hym_stm[[1]][[1]]
 stm_discr <- discr_Simmap(tree, res = 100)
-br <- stm_discr$maps[[50]]
-br
-merge_branch_cat(br)
-stm_discr$maps <- lapply(stm_discr$maps, merge_branch_cat)
-plot(stm_discr, setNames(getPalette(length(states)), states))
+# Check some arbitrary branch.
+br1 <- stm_discr$maps[[50]]
+br1
+br2 <- merge_branch_cat(br1)
+br2
+sum(br1) == br2
 
 }
 \author{

@@ -20,7 +20,22 @@ A list with the estimated unnormalized KDEs ($Maps.mean) for each edge.
 Estimated the unnormalized Markov KDE for each edge averaged across all possible root-tip paths.
 }
 \examples{
-Edge.KDE <- estimate_edge_KDE_Markov_kernel_unnorm(tree.discr, Pseudo.path.data, h = 15)
+data("hym_nhpp", "hym_tree")
+# Get reference tree.
+tree_discr <- discr_Simmap(hym_tree, res = 4000)
+# Make NHPP path data.
+nhpp <- hym_nhpp$head
+# Add pseudo data to path data.
+psd <- lapply(nhpp, function(x) -x[x < 100] )
+edge_groups <- as.list(1:length(hym_tree$edge.length))
+nhpp_psd <- add_pseudodata(Edge.groups = edge_groups, Pseudo.data = psd, Path.data = nhpp)
+# Calculate bandwidth.
+bdw <- estimate_band_W(tree_discr, nhpp_psd, band.width = "bw.nrd0")
+bdw <- mean(bdw)
+# Estimate non-normalized and normalized edge KDE.
+Edge_KDE <- estimate_edge_KDE_Markov_kernel_unnorm(tree_discr, nhpp_psd, h = bdw)
+# Check KDE data for non-normalized mean rates from an arbitrary branch.
+Edge_KDE$Maps.mean[[5]]
 
 }
 \author{

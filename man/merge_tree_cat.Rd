@@ -16,10 +16,16 @@ A tree with merged identical bins.
 Merges identical state bins over a tree in the discretized stochastic map.
 }
 \examples{
-tree <- data(HYM)$stm[[1]][[1]]
-tree <- discr_Simmap(tree)
+data("hym_stm")
+tree <- hym_stm[[1]][[1]]
+tree <- discr_Simmap(tree, res = 100)
 stm_merg <- merge_tree_cat(tree)
-stm_merg
+# Check some arbitrary branch.
+br1 <- tree$maps[[50]]
+br1
+br2 <- stm_merg$maps[[50]]
+br2
+sum(br1) == br2
 
 }
 \author{

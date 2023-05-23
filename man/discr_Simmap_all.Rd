@@ -18,9 +18,12 @@ A multiSimmap or multiPhylo object.
 Discretizes tree edges of a list of trees.
 }
 \examples{
-tree_list <- data(HYM)$stm[[1]]
-stm_discr_list <- discr_Simmap(tree_list, res = 100)
-stm_discr_list
+data("hym_stm")
+tree_list <- hym_stm[[1]]
+stm_discr_list <- discr_Simmap_all(tree_list, res = 100)
+# Check some arbitrary branch of some arbitrary tree.
+tree_list[[1]]$maps[[10]]
+stm_discr_list[[1]]$maps[[10]]
 
 }
 \author{

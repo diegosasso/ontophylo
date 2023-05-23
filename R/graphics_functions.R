@@ -19,10 +19,13 @@
 #'
 #' @author Sergei Tarasov
 #'
+#' @importFrom tibble as_tibble
+#' @importFrom ontologyIndex get_descendants
+#'
 #' @examples
-#' GR <- data(HYM_IMG)$info
-#' ontology <- HAO
-#' get_vector_ids_per_term(term = 'HAO:0000349', ontology, GR)
+#' data("HAO", "hym_graph")
+#' # Get picture layers from head.
+#' get_vector_ids_per_term(term = "HAO:0000397", ONT = HAO, GR = hym_graph)
 #'
 #' @export
 get_vector_ids_per_term <- function(term = 'HAO:0000349', ONT, GR) {
@@ -44,7 +47,7 @@ get_vector_ids_per_term <- function(term = 'HAO:0000349', ONT, GR) {
   des <- get_descendants(ONT, roots = term, exclude_roots = FALSE)
   pp <- all.ids[(all.ids %in% des)]
   selected.ids <- lapply(GL[pp], function(x) x$layer) %>% unlist %>% as.numeric()
-  selected.ids <- selected.ids[!is.na(selected.ids)]
+  selected.ids <- unique(selected.ids[!is.na(selected.ids)])
 
   return(selected.ids)
 
@@ -56,7 +59,7 @@ get_vector_ids_per_term <- function(term = 'HAO:0000349', ONT, GR) {
 #' @description Given an ontology_index object, data.frame with ontology term labels, and data.frame with picture information (see examples),
 #' produces a named vector with layer IDs to be used in the 'make_pic' function.
 #'
-#' @param terms data.frame. A data.frame with ontology terms to get layer IDs for.
+#' @param term_list list. A named list with ontology terms to get layer IDs for.
 #' The first column corresponds to the ontology term labels, the second to the ontology IDs.
 #' @param ONT ontology_index object.
 #' @param GR data.frame. A data.frame with the picture information. It contains the matches between all ontology term labels and layer IDs in the Picture object.
@@ -67,21 +70,23 @@ get_vector_ids_per_term <- function(term = 'HAO:0000349', ONT, GR) {
 #' @author Diego S. Porto
 #'
 #' @examples
-#' GR <- data(HYM_IMG)$info
-#' ontology <- HAO
-#' get_vector_ids_list(term = 'HAO:0000349', ontology, GR)
+#' data("HAO", "hym_graph")
+#' # Get picture layers from three anatomical regions.
+#' terms_list <- as.list(c("HAO:0000397", "HAO:0000576", "HAO:0000626"))
+#' terms_list <- setNames(terms_list, c("head", "mesosoma", "metasoma"))
+#' get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_graph)
 #'
 #' @export
-get_vector_ids_list <- function(terms, ONT, GR) {
-
-  layers <- lapply(terms[[2]], function(x) get_vector_ids_per_term(term = x, ONT, GR))
-
-  names(layers) <- terms[[1]]
-
+get_vector_ids_list <- function(terms_list, ONT, GR) {
+  
+  layers <- lapply(terms_list, function(x) get_vector_ids_per_term(term = x, ONT, GR))
+  
+  names(layers) <- names(terms_list)
+  
   layers <- setNames(unlist(layers, use.names = F), rep(names(layers), lengths(layers)))
-
+  
   return(layers)
-
+  
 }
 
 
@@ -102,9 +107,10 @@ get_vector_ids_list <- function(terms, ONT, GR) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' #Stat <- setNames(runif(5, 0.1,10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
-#' #hm.palette <- colorRampPalette(brewer.pal(9, 'Spectral') %>% rev, space = 'Lab')
-#' #cols.maps <- make_colors(Stat, palette = hm.palette(100))
+#' stat <- setNames(runif(5, 0.1, 10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
+#' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
+#' cols.maps <- make_colors(stat, palette = hm.palette(100))
+#' cols.maps
 #'
 #' @export
 make_colors <- function(Stat, palette) {
@@ -141,9 +147,10 @@ make_colors <- function(Stat, palette) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' #Stat <- setNames(runif(5, 0.1,10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
-#' #hm.palette <- colorRampPalette(brewer.pal(9, 'Spectral') %>% rev, space = 'Lab')
-#' #cols.maps <- make_colors_relative_scale(Stat, palette = hm.palette(100), lims = c(min(Stat),max(Stat)))
+#' stat <- setNames(runif(5, 0.1, 10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
+#' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
+#' cols.maps <- make_colors_relative_scale(stat, palette = hm.palette(100), lims = c(min(stat), max(stat)))
+#' cols.maps
 #'
 #' @export
 make_colors_relative_scale <- function(Stat, palette, lims) {
@@ -182,6 +189,14 @@ make_colors_relative_scale <- function(Stat, palette, lims) {
 #' @author Sergei Tarasov
 #'
 #' @examples
+#' stat <- runif(10, 0.25, 1)
+#' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
+#' \dontrun{
+#' 
+#'   color.bar(hm.palette(100), min = min(stat), max = max(stat),
+#'             ticks = round(c(min(stat), max(stat)/2, max(stat)), 2), title = "")
+#' 
+#' }
 #'
 #' @export
 color.bar <- function(pal, min, max = -min, nticks = 11, ticks = seq(min, max, len = nticks), title = '') {
@@ -224,6 +239,24 @@ color.bar <- function(pal, min, max = -min, nticks = 11, ticks = seq(min, max, l
 #' @author Sergei Tarasov
 #'
 #' @examples
+#' data("HAO", "hym_nhpp", "hym_graph", "hym_img")
+#' # Get picture layers from three anatomical regions.
+#' terms_list <- as.list(c("HAO:0000397", "HAO:0000576", "HAO:0000626"))
+#' terms_list <- setNames(terms_list, c("head", "mesosoma", "metasoma"))
+#' layers <- get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_graph)
+#' # Get mean rates for an arbitrary branch for three anatomical regions.
+#' stat_list <- lapply(hym_nhpp, function(x) mean(x[[50]]) )
+#' # Get color palette.
+#' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
+#' cols_maps <- make_colors_relative_scale(unlist(stat_list), palette = hm.palette(100),
+#'                                         lims = c(min(unlist(stat_list)), max(unlist(stat_list))))
+#' # Plot picture.
+#' new_pic <- make_pic(hym_img, layers, cols_maps)
+#' \dontrun{
+#' 
+#'   grImport::grid.picture(new_pic)
+#' 
+#' }
 #'
 #' @export
 make_pic <- function(picture, layers, cols.maps) {

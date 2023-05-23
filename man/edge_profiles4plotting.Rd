@@ -17,6 +17,25 @@ A tibble with X and Y coordinates and other information necessary for making an 
 \description{
 Gets the information necessary for making an edgeplot, where the tree is plotted in a space where the x axis is the time and y axis the scale of the desired statistics.
 }
+\examples{
+data("hym_tree", "hym_kde")
+# Get reference tree.
+tree_discr <- discr_Simmap(hym_tree, res = 4000)
+# Get smoothing of normalized edge KDE data for mean rates.
+Edge_KDE <- hym_kde$head
+Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
+# Make edgeplot nhpp data.
+stat_prof <- edge_profiles4plotting(tree_discr, Edge_KDE_stat)
+\dontrun{
+
+ ggplot2::ggplot(data = stat_prof, ggplot2::aes(x = X, y =  Y, group = edge.id, color = Y)) +
+    ggplot2::geom_line(alpha = 1, linewidth = 0.3) +
+    ggplot2::labs(x = "Time", y = "Branch Rates", color = "Rates" ) +
+    ggplot2::scale_color_gradientn(colours = rev(rainbow(5, start = 0, end = 0.7)) )
+
+}
+
+}
 \author{
 Sergei Tarasov
 }

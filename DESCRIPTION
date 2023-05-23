@@ -20,9 +20,9 @@ Encoding: UTF-8
 Language: en-US
 URL: https://github.com/diegosasso/ontophylo
 BugReports: https://github.com/diegosasso/ontophylo/issues
-Depends: phytools, ontologyIndex, stringdist, truncnorm, fANCOVA
-Imports: dplyr, tibble, tidyr
-Suggests: grImport, tidyverse, rmarkdown, knitr
+Depends: R (>= 3.5.0)
+Imports: magrittr, dplyr, tidyr, tibble, stringdist, phytools, ontologyIndex, RColorBrewer, truncnorm, fANCOVA
+Suggests: grImport, ggplot2, rmarkdown, knitr, roxygen2
 VignetteBuilder: knitr
 Remotes: diegosasso/ontophylo
 LazyData: true

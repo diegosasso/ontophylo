@@ -20,10 +20,18 @@ A list of stacked stochastic character maps.
 Performs the final stacking of maps for a set of stochastic character maps stored in a list.
 }
 \examples{
-tree_list <- data(HYM)$stm[[1]]
-tree_list <- discr_Simmap(tree_list)
-tree_list <- merge_tree_cat_list(tree_list)
-paramo.list(cc, tree_list, 10)
+data("hym_stm")
+# Select the first five characters.
+tree_list <- hym_stm[1:5]
+tree_list <- lapply(tree_list, function(x) discr_Simmap_all(x, res = 100))
+tree_list_amalg <- paramo.list(names(tree_list), tree_list, ntrees = 100)
+tree_list_amalg <- do.call(c, tree_list_amalg)
+# Plot one amalgamated stochastic map.
+\dontrun{
+
+  phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+
+}
 
 }
 \author{

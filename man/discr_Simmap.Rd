@@ -18,9 +18,12 @@ A simmap or phylo object.
 Discretizes tree edges into identical bins given a selected resolution value.
 }
 \examples{
-tree <- data(HYM)$stm[[1]][[1]]
+data("hym_stm")
+tree <- hym_stm[[1]][[1]]
 stm_discr <- discr_Simmap(tree, res = 100)
-stm_discr
+# Check some arbitrary branch.
+tree$maps[[10]]
+stm_discr$maps[[10]]
 
 }
 \author{

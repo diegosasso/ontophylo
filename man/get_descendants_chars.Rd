@@ -23,9 +23,9 @@ The vector of character IDs.
 Returns all characters located (associated) with a given ontology term.
 }
 \examples{
-ontology <- HAO
-ontology$terms_selected_id <- list(`CHAR:1` = c("HAO:0000653"), `CHAR:2` = c("HAO:0000653"))
-get_descendants_chars(ontology, annotations = "manual", "HAO:0000653")
+data("HAO")
+HAO$terms_selected_id <- list("CH1" = c("HAO:0000653"), "CH2" = c("HAO:0000653"))
+get_descendants_chars(HAO, annotations = "manual", "HAO:0000653")
 
 }
 \author{

@@ -18,8 +18,14 @@ A numeric value for the integral over all edges.
 Checks the integral of normalized Markov KDE or normalized loess smoothing over edges.
 }
 \examples{
-integrate_edge_KDE(tree.discr, Edge.KDE$Maps.mean.norm)
-integrate_edge_KDE(tree.discr, Edge.KDE$Maps.mean.loess.norm)
+data("hym_kde", "hym_tree")
+# Get reference tree.
+tree_discr <- discr_Simmap(hym_tree, res = 4000)
+# Get non-normalized and normalized edge KDE data for mean rates.
+Edge_KDE <- hym_kde$head
+# Check integrals.
+integrate_edge_KDE(tree_discr, Edge_KDE$Maps.mean.norm)
+integrate_edge_KDE(tree_discr, Edge_KDE$Maps.mean.loess.norm)
 
 }
 \author{

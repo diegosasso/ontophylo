@@ -19,8 +19,16 @@ A list of tibbles -- Points, Lines, and Edge.map -- correponding to tree branch 
 Performs multidimensional scaling (MDS) based on hamming distances among character state vectors from one stochastic character map.
 }
 \examples{
-MultiScale.simmap(tree.merge, add.noise = c(.5,.5))
-MultiScale.simmap(tree.merge, add.noise = NULL)
+data("hym_stm_mds")
+# Get a sample of 5 amalgamated stochastic maps.
+tree_list <- hym_stm_mds
+tree_list <- merge_tree_cat_list(tree_list)
+# Multidimensional scaling for an arbitrary tree.
+\dontrun{
+  
+  MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = c(0.3,0.3)))
+  
+}
 
 }
 \author{

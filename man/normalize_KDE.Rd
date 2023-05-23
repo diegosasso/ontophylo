@@ -18,7 +18,17 @@ A list with the normalized loess smoothing calculated for each edge.
 Normalizes the loess smoothing for the Markov KDE.
 }
 \examples{
-edge.KDE$Maps.mean.loess.norm <- normalize_KDE(tree.discr, edge.KDE$Maps.mean.loess)
+data("hym_kde", "hym_tree")
+# Get reference tree.
+tree_discr <- discr_Simmap(hym_tree, res = 4000)
+# Get non-normalized and normalized edge KDE data.
+Edge_KDE <- hym_kde$head
+# Calculate smoothing of edge KDE data.
+Edge_KDE$Maps.mean.loess <- suppressWarnings(loess_smoothing_KDE(tree_discr, Edge_KDE))
+# Normalize smoothing edge KDE data.
+Edge_KDE$Maps.mean.loess.norm <- normalize_KDE(tree_discr, Edge_KDE$Maps.mean.loess)
+# Check smoothing of KDE data for non-normalized mean rates from an arbitrary branch.
+Edge_KDE$Maps.mean.loess[[5]]
 
 }
 \author{

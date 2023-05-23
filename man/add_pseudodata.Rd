@@ -20,7 +20,17 @@ A list of path data with the pseudodata added.
 Adds a vector of pseudodata to the path data obtained from the 'make_data_NHPP_KDE_Markov_kernel' function.
 }
 \examples{
-add_pseudodata(Edge.groups, Pseudo.data, Path.data)
+data("hym_hm", "hym_tree")
+# Get hamming data from the head characters.
+hm <- hym_hm$head
+# Make NHPP path data.
+nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
+# Add pseudo data to path data.
+psd <- lapply(nhpp, function(x) -x[x < 100] )
+edge_groups <- as.list(1:length(hym_tree$edge.length))
+nhpp_psd <- add_pseudodata(Edge.groups = edge_groups, Pseudo.data = psd, Path.data = nhpp)
+# Check NHPP path data plus pseudodata for an arbitrary branch.
+nhpp_psd[[5]]
 
 }
 \author{

@@ -16,10 +16,8 @@ The input tibble with two additional columns giving information on absolute and 
 \description{
 Calculates the hamming distance between states for a given path.
 }
-\examples{
-hm <- path_hamming(Path)
-
-}
 \author{
 Sergei Tarasov
+
+Internal function. Not exported.
 }

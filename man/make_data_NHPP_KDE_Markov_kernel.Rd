@@ -16,7 +16,13 @@ A list with changing times between states for all edges of a given sample of tre
 Gets data on changing times between states for all edges of a given sample of trees for the Markov kernel density estimator (KDE).
 }
 \examples{
-path.data <- make_data_NHPP_KDE_Markov_kernel(Tb.trees)
+data("hym_hm")
+# Get hamming data from the head characters.
+hm <- hym_hm$head
+# Make NHPP path data.
+nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
+# Check NHPP path data for an arbitrary branch.
+nhpp[[5]]
 
 }
 \author{

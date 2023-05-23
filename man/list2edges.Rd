@@ -20,7 +20,7 @@ Takes a list of charater annotations and creates an edge matrix comprising two c
 The list to table conversion can be done using ldply function from plyr package: plyr::ldply(list, rbind).
 }
 \examples{
-annot_list <- list(`CHAR:1` = c("HAO:0000933", "HAO:0000958"), `CHAR:2` = c("HAO:0000833", "HAO:0000258"))
+annot_list <- list("CH1" = c("HAO:0000933", "HAO:0000958"), "CH2" = c("HAO:0000833", "HAO:0000258"))
 list2edges(annot_list)
 
 }

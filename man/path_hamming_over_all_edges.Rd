@@ -16,7 +16,13 @@ A tibble with information on state changes, time spent on each state, edge IDs, 
 Calculates hamming distances for all paths in a given discretized tree.
 }
 \examples{
-Tb.trees <- path_hamming_over_trees_KDE(tree.list)
+data("hym_stm_amalg")
+# Get one sample of stochastic maps from head.
+tree <- hym_stm_amalg$head[[1]]
+tree <- merge_tree_cat(tree)
+# Calculate hamming distances.
+ph <- suppressWarnings(path_hamming_over_all_edges(tree))
+ph
 
 }
 \author{

@@ -20,8 +20,12 @@ A tibble with the simulated distribution.
 Simulates a distribution of number of state changes across all branches of all trees
 }
 \examples{
-tree.list <- Trees.focal.BRs[[1]]
-posterior_lambda_KDE_Distr(tree.list, n.sim = 10, "br")
+data("hym_stm_amalg")
+# Get a sample of ten stochastic maps from head.
+tree_list <- hym_stm_amalg$head[1:10]
+tree_list <- merge_tree_cat_list(tree_list)
+# Simulate posterior poisson distribution.
+posterior_lambda_KDE_Distr(tree_list, n.sim = 10, BR.name = "head")
 
 }
 \author{

@@ -18,7 +18,16 @@ A list with the distribution of the derivatives calculated for each edge.
 Calculates the derivative of the normalized Markov KDE or normalized loess smoothing over edges.
 }
 \examples{
-derivative_KDE(tree.discr, Edge.KDE.stat)
+data("hym_tree", "hym_kde")
+# Get reference tree.
+tree_discr <- discr_Simmap(hym_tree, res = 4000)
+# Get smoothing of normalized edge KDE data for mean rates.
+Edge_KDE <- hym_kde$head
+Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
+# Calculate derivatives.
+Edge_KDE$loess.lambda.mean.deriv <- derivative_KDE(tree_discr, Edge_KDE_stat)
+# Check derivatives of some arbitrary branch.
+Edge_KDE$loess.lambda.mean.deriv[[5]]
 
 }
 \author{

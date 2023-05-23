@@ -21,6 +21,27 @@ Assigns colors to picture ID layers (@paths) of an object of class 'Picture'.
 The object should be a PS or ESP vector illustration imported using the grImport package.
 Colors are taken from cols.maps argument were the palette indicates the scale of the desired statistics for the evolutionary rates.
 }
+\examples{
+data("HAO", "hym_nhpp", "hym_graph", "hym_img")
+# Get picture layers from three anatomical regions.
+terms_list <- as.list(c("HAO:0000397", "HAO:0000576", "HAO:0000626"))
+terms_list <- setNames(terms_list, c("head", "mesosoma", "metasoma"))
+layers <- get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_graph)
+# Get mean rates for an arbitrary branch for three anatomical regions.
+stat_list <- lapply(hym_nhpp, function(x) mean(x[[50]]) )
+# Get color palette.
+hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
+cols_maps <- make_colors_relative_scale(unlist(stat_list), palette = hm.palette(100),
+                                        lims = c(min(unlist(stat_list)), max(unlist(stat_list))))
+# Plot picture.
+new_pic <- make_pic(hym_img, layers, cols_maps)
+\dontrun{
+
+  grImport::grid.picture(new_pic)
+
+}
+
+}
 \author{
 Sergei Tarasov
 }

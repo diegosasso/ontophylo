@@ -15,8 +15,17 @@
 #'
 #' @author Sergei Tarasov
 #'
+#' @importFrom tibble tibble
+#' @import dplyr
+#'
 #' @examples
-#' Tb.trees <- path_hamming_over_trees_KDE(tree.list)
+#' data("hym_stm_amalg")
+#' # Get ten samples of stochastic maps from head.
+#' tree_list <- hym_stm_amalg$head[1:10]
+#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Calculate hamming distances.
+#' ph <- suppressWarnings(path_hamming_over_trees_KDE(tree_list))
+#' ph
 #'
 #' @export
 path_hamming_over_trees_KDE <- function(tree.list) {
@@ -49,7 +58,13 @@ path_hamming_over_trees_KDE <- function(tree.list) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' Tb.trees <- path_hamming_over_trees_KDE(tree.list)
+#' data("hym_stm_amalg")
+#' # Get one sample of stochastic maps from head.
+#' tree <- hym_stm_amalg$head[[1]]
+#' tree <- merge_tree_cat(tree)
+#' # Calculate hamming distances.
+#' ph <- suppressWarnings(path_hamming_over_all_edges(tree))
+#' ph
 #'
 #' @export
 path_hamming_over_all_edges <- function(tree.merge) {
@@ -182,10 +197,8 @@ get_path_edges <- function(tree.merge, node) {
 #'
 #' @author Sergei Tarasov
 #'
-#' @examples
-#' hm <- path_hamming(Path)
+#' Internal function. Not exported.
 #'
-#' @export
 path_hamming <- function(Path) {
 
   st <- Path$States
@@ -215,7 +228,13 @@ path_hamming <- function(Path) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' path.data <- make_data_NHPP_KDE_Markov_kernel(Tb.trees)
+#' data("hym_hm")
+#' # Get hamming data from the head characters.
+#' hm <- hym_hm$head
+#' # Make NHPP path data.
+#' nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
+#' # Check NHPP path data for an arbitrary branch.
+#' nhpp[[5]]
 #'
 #' @export
 make_data_NHPP_KDE_Markov_kernel <- function(Tb.trees) {
@@ -247,10 +266,8 @@ make_data_NHPP_KDE_Markov_kernel <- function(Tb.trees) {
 #'
 #' @author Sergei Tarasov
 #'
-#' @examples
-#' make_data_NHPP_over_edge_MarkovKDE(Tb.trees, Focal.Edge = 5)
+#' Internal function. Not exported.
 #'
-#' @export
 make_data_NHPP_over_edge_MarkovKDE <- function(Tb.trees, Focal.Edge) {
 
   #Focal.Edge <- 1
@@ -276,7 +293,17 @@ make_data_NHPP_over_edge_MarkovKDE <- function(Tb.trees, Focal.Edge) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' add_pseudodata(Edge.groups, Pseudo.data, Path.data)
+#' data("hym_hm", "hym_tree")
+#' # Get hamming data from the head characters.
+#' hm <- hym_hm$head
+#' # Make NHPP path data.
+#' nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
+#' # Add pseudo data to path data.
+#' psd <- lapply(nhpp, function(x) -x[x < 100] )
+#' edge_groups <- as.list(1:length(hym_tree$edge.length))
+#' nhpp_psd <- add_pseudodata(Edge.groups = edge_groups, Pseudo.data = psd, Path.data = nhpp)
+#' # Check NHPP path data plus pseudodata for an arbitrary branch.
+#' nhpp_psd[[5]]
 #'
 #' @export
 add_pseudodata <- function(Edge.groups, Pseudo.data, Path.data) {
@@ -314,7 +341,20 @@ return(Pseudo.path.data)
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' estimate_band_W(tree_discr, data.path, band.width = "bw.nrd0")
+#' data("hym_hm", "hym_tree")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get hamming data from the head characters.
+#' hm <- hym_hm$head
+#' # Make NHPP path data.
+#' nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
+#' # Add pseudo data to path data.
+#' psd <- lapply(nhpp, function(x) -x[x < 100] )
+#' edge_groups <- as.list(1:length(hym_tree$edge.length))
+#' nhpp_psd <- add_pseudodata(Edge.groups = edge_groups, Pseudo.data = psd, Path.data = nhpp)
+#' # Calculate bandwidth.
+#' bdw <- estimate_band_W(tree_discr, nhpp_psd, band.width = "bw.nrd0")
+#' mean(bdw)
 #'
 #' @export
 estimate_band_W <- function(tree.discr, data.path, band.width = c('bw.nrd0', 'bw.nrd0', 'bw.ucv', 'bw.bcv', 'bw.SJ')) {
@@ -363,7 +403,24 @@ estimate_band_W <- function(tree.discr, data.path, band.width = c('bw.nrd0', 'bw
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' Edge.KDE <- estimate_edge_KDE(tree.discr, Pseudo.path.data, h = 15)
+#' data("hym_nhpp", "hym_tree")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Make NHPP path data.
+#' nhpp <- hym_nhpp$head
+#' # Add pseudo data to path data.
+#' psd <- lapply(nhpp, function(x) -x[x < 100] )
+#' edge_groups <- as.list(1:length(hym_tree$edge.length))
+#' nhpp_psd <- add_pseudodata(Edge.groups = edge_groups, Pseudo.data = psd, Path.data = nhpp)
+#' # Calculate bandwidth.
+#' bdw <- estimate_band_W(tree_discr, nhpp_psd, band.width = "bw.nrd0")
+#' bdw <- mean(bdw)
+#' # Estimate non-normalized and normalized edge KDE.
+#' Edge_KDE <- estimate_edge_KDE(tree_discr, nhpp_psd, h = bdw)
+#' # Check KDE data for normalized mean rates from an arbitrary branch.
+#' Edge_KDE$Maps.mean.norm[[5]]
+#' # Check KDE data for non-normalized mean rates from an arbitrary branch.
+#' Edge_KDE$Maps.mean[[5]]
 #'
 #' @export
 estimate_edge_KDE <- function(tree.discr, Path.data, h) {
@@ -407,7 +464,22 @@ estimate_edge_KDE <- function(tree.discr, Path.data, h) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' Edge.KDE <- estimate_edge_KDE_Markov_kernel_unnorm(tree.discr, Pseudo.path.data, h = 15)
+#' data("hym_nhpp", "hym_tree")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Make NHPP path data.
+#' nhpp <- hym_nhpp$head
+#' # Add pseudo data to path data.
+#' psd <- lapply(nhpp, function(x) -x[x < 100] )
+#' edge_groups <- as.list(1:length(hym_tree$edge.length))
+#' nhpp_psd <- add_pseudodata(Edge.groups = edge_groups, Pseudo.data = psd, Path.data = nhpp)
+#' # Calculate bandwidth.
+#' bdw <- estimate_band_W(tree_discr, nhpp_psd, band.width = "bw.nrd0")
+#' bdw <- mean(bdw)
+#' # Estimate non-normalized and normalized edge KDE.
+#' Edge_KDE <- estimate_edge_KDE_Markov_kernel_unnorm(tree_discr, nhpp_psd, h = bdw)
+#' # Check KDE data for non-normalized mean rates from an arbitrary branch.
+#' Edge_KDE$Maps.mean[[5]]
 #'
 #' @export
 estimate_edge_KDE_Markov_kernel_unnorm <- function(tree.discr, Path.data, h = 10) {
@@ -497,7 +569,17 @@ KDE_unnorm_trunc_Markov <- Vectorize(KDE_unnormalized_scalar_Markov_kernel, vect
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' edge.KDE$Maps.mean.loess <- loess_smooting_KDE(tree.discr, edge.KDE)
+#' data("hym_kde", "hym_tree")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get non-normalized and normalized edge KDE data.
+#' Edge_KDE <- hym_kde$head
+#' # Calculate smoothing of edge KDE data.
+#' Edge_KDE$Maps.mean.loess <- suppressWarnings(loess_smoothing_KDE(tree_discr, Edge_KDE))
+#' # Check smoothing of KDE data for normalized mean rates from an arbitrary branch.
+#' Edge_KDE$Maps.mean.loess.norm[[5]]
+#' # Check smoothing of KDE data for non-normalized mean rates from an arbitrary branch.
+#' Edge_KDE$Maps.mean.loess[[5]]
 #'
 #' @export
 loess_smoothing_KDE <- function(tree.discr, Edge.KDE) {
@@ -550,7 +632,17 @@ loess_smoothing_KDE <- function(tree.discr, Edge.KDE) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' edge.KDE$Maps.mean.loess.norm <- normalize_KDE(tree.discr, edge.KDE$Maps.mean.loess)
+#' data("hym_kde", "hym_tree")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get non-normalized and normalized edge KDE data.
+#' Edge_KDE <- hym_kde$head
+#' # Calculate smoothing of edge KDE data.
+#' Edge_KDE$Maps.mean.loess <- suppressWarnings(loess_smoothing_KDE(tree_discr, Edge_KDE))
+#' # Normalize smoothing edge KDE data.
+#' Edge_KDE$Maps.mean.loess.norm <- normalize_KDE(tree_discr, Edge_KDE$Maps.mean.loess)
+#' # Check smoothing of KDE data for non-normalized mean rates from an arbitrary branch.
+#' Edge_KDE$Maps.mean.loess[[5]]
 #'
 #' @export
 normalize_KDE <- function(tree.discr, Maps.mean.loess) {
@@ -584,8 +676,14 @@ normalize_KDE <- function(tree.discr, Maps.mean.loess) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' integrate_edge_KDE(tree.discr, Edge.KDE$Maps.mean.norm)
-#' integrate_edge_KDE(tree.discr, Edge.KDE$Maps.mean.loess.norm)
+#' data("hym_kde", "hym_tree")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get non-normalized and normalized edge KDE data for mean rates.
+#' Edge_KDE <- hym_kde$head
+#' # Check integrals.
+#' integrate_edge_KDE(tree_discr, Edge_KDE$Maps.mean.norm)
+#' integrate_edge_KDE(tree_discr, Edge_KDE$Maps.mean.loess.norm)
 #'
 #' @export
 integrate_edge_KDE <- function(tree.discr, Edge.KDE.list) {
@@ -625,9 +723,16 @@ integrate_edge_KDE <- function(tree.discr, Edge.KDE.list) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @importFrom phytools countSimmap
+#' @importFrom magrittr %>%
+#'
 #' @examples
-#' tree.list <- Trees.focal.BRs[[1]]
-#' posterior_lambda_KDE(tree.list)
+#' data("hym_stm_amalg")
+#' # Get a sample of ten stochastic maps from head.
+#' tree_list <- hym_stm_amalg$head
+#' tree_list <- merge_tree_cat_list(tree_list[1:10])
+#' # Calculate posterior poisson statistics.
+#' posterior_lambda_KDE(tree_list)
 #'
 #' @export
 posterior_lambda_KDE <- function(tree.list) {
@@ -670,9 +775,16 @@ posterior_lambda_KDE <- function(tree.list) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @importFrom phytools countSimmap
+#' @importFrom magrittr %>%
+#'
 #' @examples
-#' tree.list <- Trees.focal.BRs[[1]]
-#' posterior_lambda_KDE_Distr(tree.list, n.sim = 10, "br")
+#' data("hym_stm_amalg")
+#' # Get a sample of ten stochastic maps from head.
+#' tree_list <- hym_stm_amalg$head[1:10]
+#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Simulate posterior poisson distribution.
+#' posterior_lambda_KDE_Distr(tree_list, n.sim = 10, BR.name = "head")
 #'
 #' @export
 posterior_lambda_KDE_Distr <- function(tree.list, n.sim = 10, BR.name) {
@@ -710,7 +822,23 @@ posterior_lambda_KDE_Distr <- function(tree.list, n.sim = 10, BR.name) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' make_postPois_KDE(Edge.KDE.stat, lambda.post, lambda.post.stat = 'Mean')
+#' data("hym_stm_amalg", "hym_kde")
+#' # Get a sample of ten stochastic maps from head.
+#' tree_list <- hym_stm_amalg$head[1:10]
+#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Calculate posterior poisson statistics.
+#' lambda_post <- posterior_lambda_KDE(tree_list)
+#' # Get smoothing of normalized edge KDE data for mean rates.
+#' Edge_KDE <- hym_kde$head
+#' Edge_KDE_stat <- Edge_KDE$Maps.mean.loess.norm
+#' # Make posterior poisson distribution.
+#' Edge_KDE$lambda.mean <- make_postPois_KDE(Edge_KDE_stat, lambda_post, lambda.post.stat = "Mean")
+#' # Check posterior poisson of some arbitrary branch.
+#' \dontrun{
+#'
+#'   plot(density(Edge_KDE$lambda.mean[[5]]), main = "", xlab = "Rates")
+#'
+#' }
 #'
 #' @export
 make_postPois_KDE <- function(Edge.KDE.stat, lambda.post, lambda.post.stat = 'Mean') {
@@ -738,7 +866,16 @@ make_postPois_KDE <- function(Edge.KDE.stat, lambda.post, lambda.post.stat = 'Me
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' derivative_KDE(tree.discr, Edge.KDE.stat)
+#' data("hym_tree", "hym_kde")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get smoothing of normalized edge KDE data for mean rates.
+#' Edge_KDE <- hym_kde$head
+#' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
+#' # Calculate derivatives.
+#' Edge_KDE$loess.lambda.mean.deriv <- derivative_KDE(tree_discr, Edge_KDE_stat)
+#' # Check derivatives of some arbitrary branch.
+#' Edge_KDE$loess.lambda.mean.deriv[[5]]
 #'
 #' @export
 derivative_KDE <- function(tree.discr, Edge.KDE.stat) {
@@ -829,7 +966,20 @@ derivative_KDE <- function(tree.discr, Edge.KDE.stat) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' NHPP.Map <- make_contMap(tree.discr, Edge.KDE$Maps.mean.norm)
+#' data("hym_tree", "hym_kde")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get smoothing of normalized edge KDE data for mean rates.
+#' Edge_KDE <- hym_kde$head
+#' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
+#' # Make contmap nhpp data.
+#' nhpp_map <- make_contMap_KDE(tree_discr, Edge_KDE_stat)
+#' # Plot contmap.
+#' \dontrun{
+#'
+#'   phytools::plot.contMap(nhpp_map, lwd = 3, outline = F, legend = F, ftype = "off", plot = F)
+#'
+#' }
 #'
 #' @export
 make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
@@ -895,7 +1045,27 @@ make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @import dplyr
+#' @importFrom tidyr unnest
+#' @importFrom tibble enframe
+#'
 #' @examples
+#' data("hym_tree", "hym_kde")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get smoothing of normalized edge KDE data for mean rates.
+#' Edge_KDE <- hym_kde$head
+#' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
+#' # Make edgeplot nhpp data.
+#' stat_prof <- edge_profiles4plotting(tree_discr, Edge_KDE_stat)
+#' \dontrun{
+#'
+#'  ggplot2::ggplot(data = stat_prof, ggplot2::aes(x = X, y =  Y, group = edge.id, color = Y)) +
+#'     ggplot2::geom_line(alpha = 1, linewidth = 0.3) +
+#'     ggplot2::labs(x = "Time", y = "Branch Rates", color = "Rates" ) +
+#'     ggplot2::scale_color_gradientn(colours = rev(rainbow(5, start = 0, end = 0.7)) )
+#'
+#' }
 #'
 #' @export
 edge_profiles4plotting <- function(tree.discr, Edge.KDE.stat) {
@@ -946,6 +1116,9 @@ edge_profiles4plotting <- function(tree.discr, Edge.KDE.stat) {
 #' Internal function. Not exported.
 #'
 #' @author Sergei Tarasov
+#' @import dplyr
+#' @importFrom tibble tibble
+#' @importFrom ape Ntip
 #'
 join_edges <- function(tree.discr, edge.profs) {
 
