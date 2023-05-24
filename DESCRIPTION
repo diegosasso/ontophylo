@@ -1,6 +1,6 @@
 Package: ontophylo
 Title: Ontology-Informed Phylogenetic Comparative Analyses
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: 
     c(person(c("Diego", "S."), "Porto",
              email = "diegosporto@gmail.com",
