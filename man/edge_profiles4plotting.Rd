@@ -26,14 +26,6 @@ Edge_KDE <- hym_kde$head
 Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
 # Make edgeplot nhpp data.
 stat_prof <- edge_profiles4plotting(tree_discr, Edge_KDE_stat)
-\dontrun{
-
- ggplot2::ggplot(data = stat_prof, ggplot2::aes(x = X, y =  Y, group = edge.id, color = Y)) +
-    ggplot2::geom_line(alpha = 1, linewidth = 0.3) +
-    ggplot2::labs(x = "Time", y = "Branch Rates", color = "Rates" ) +
-    ggplot2::scale_color_gradientn(colours = rev(rainbow(5, start = 0, end = 0.7)) )
-
-}
 
 }
 \author{

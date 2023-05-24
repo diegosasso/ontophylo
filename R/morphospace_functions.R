@@ -181,3 +181,69 @@ add_noise_MD <- function(MD, add.noise) {
   
 }
 
+
+#' @title Plot morphospace from MDS
+#'
+#' @description Wrapper function for plotting morphospaces obtained using the MultiScale.simmap' function.
+#'
+#' @param MD list. A list with the morphospace information obtained using the 'MultiScale.simmap' function. 
+#' @param Tslice numeric. The value for the temporal slices to be plotted, from root to tip. For example, if Tslice = 25, then all points in the morphospaces from time 0 (root) to 25 will be plotted.  
+#'
+#' @author Diego Porto
+#'
+#' @import dplyr
+#' @import ggplot2
+#'
+#' @examples
+#' data("hym_stm_mds")
+#' # Get a sample of 5 amalgamated stochastic maps.
+#' tree_list <- hym_stm_mds
+#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Multidimensional scaling for an arbitrary tree.
+#' \dontrun{
+#'   
+#'   MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = c(0.3,0.3)))
+#'
+#'   mds_plot(MD, Tslice = 10)
+#'   mds_plot(MD, Tslice = 50)
+#'   mds_plot(MD, Tslice = 200)
+#'   mds_plot(MD, Tslice = 280)
+#'   
+#' }
+#'
+#' @export
+mds_plot <- function(MD, Tslice = max(MD$Points$time)) {
+
+  # Add tip ids.
+  MD$Points <- mutate(MD$Points, tip.id = c(1:nrow(MD$Points)))
+
+  # Get tree height.
+  Tmax <- max(MD$Points$time)
+
+  # Filter data according to time slice.
+  MD$Points <- MD$Points %>% filter(time <= Tslice)
+
+  # Generate MDS plot.
+  GG <-
+
+    ggplot(MD$Points) +
+
+    geom_segment(data = MD$Lines, aes(x = start.V1, y = start.V2, xend = end.V1, yend = end.V2),
+                 colour = "red", linewidth = 0.3, linetype = 1, alpha = 0.3) +
+
+    geom_point(aes(x = V1, y = V2, color = time, group = tip.id), alpha = 0.8, size = 1.6) +
+
+    scale_colour_gradient(low = "purple",  high = "green", limits = c(0, Tmax),
+                          breaks = seq(50, Tmax, 50), labels = seq(50, Tmax, 50) %>% rev) +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          legend.title = element_text(size = 18),
+          legend.text = element_text(size = 16),
+          axis.title.x = element_text(size = 18),
+          axis.text.x = element_text(size = 16),
+          axis.title.y = element_text(size = 18),
+          axis.text.y = element_text(size = 16),) +
+
+    xlab("Coor1") + ylab("Coor2") +
+    guides(color = guide_colourbar(title = "Time Myr", reverse = F, draw.ulim = T, draw.llim = T))
+
+}

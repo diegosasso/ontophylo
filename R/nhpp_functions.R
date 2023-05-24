@@ -1058,14 +1058,6 @@ make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
 #' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
 #' # Make edgeplot nhpp data.
 #' stat_prof <- edge_profiles4plotting(tree_discr, Edge_KDE_stat)
-#' \dontrun{
-#'
-#'  ggplot2::ggplot(data = stat_prof, ggplot2::aes(x = X, y =  Y, group = edge.id, color = Y)) +
-#'     ggplot2::geom_line(alpha = 1, linewidth = 0.3) +
-#'     ggplot2::labs(x = "Time", y = "Branch Rates", color = "Rates" ) +
-#'     ggplot2::scale_color_gradientn(colours = rev(rainbow(5, start = 0, end = 0.7)) )
-#'
-#' }
 #'
 #' @export
 edge_profiles4plotting <- function(tree.discr, Edge.KDE.stat) {
@@ -1155,6 +1147,88 @@ join_edges <- function(tree.discr, edge.profs) {
   }
 
   return(Joints)
+
+}
+
+
+#' @title Plot edge profiles and contMap
+#'
+#' @description Wrapper function for plotting edge profiles and contmap from NHPP.
+#'
+#' @param map_stat contMap object. A contMap obtained using the 'make_contMap_KDE' function.
+#' @param prof_stat tibble. A tibble with the edgeplot information obtained using the 'edge_profiles4plotting' function.
+#'
+#' @return A plot with the edge profiles and contMap of the selected statistic (e.g. branch rates).
+#'
+#' @author Diego Porto
+#'
+#' @import dplyr
+#' @import phytools
+#' @import ggplot2
+#' @import grid
+#'
+#' @examples
+#' data("hym_tree", "hym_kde")
+#' # Get reference tree.
+#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' # Get smoothing of normalized edge KDE data for mean rates.
+#' Edge_KDE <- hym_kde$head
+#' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
+#' # Make contmap nhpp data.
+#' map_stat <- make_contMap_KDE(tree_discr, Edge_KDE_stat)
+#' # Make edgeplot nhpp data.
+#' prof_stat <- edge_profiles4plotting(tree_discr, Edge_KDE_stat)
+#' # Plot.
+#' \dontrun{
+#'
+#'   edgeplot(map_stat, prof_stat)
+#'
+#' }
+#'
+#' @export
+edgeplot <- function(map_stat, prof_stat) {
+
+  # Get tree height.
+  Tmax <- max(nodeHeights(map_stat$tree))
+
+  # Set plot layout.
+  layout(matrix(c(1,2),ncol = 1), heights = c(2,1))
+
+  # Plot contmap.
+  plot.contMap(map_stat, lwd = 3, outline = F, legend = F, ftype = "off",
+               plot = F, mar = c(0.1, 3.45, 0.1, 0.35))
+
+  # Plot edgeplot.
+  plot_edgeprof <-
+
+    ggplot(data = prof_stat, aes(x = X-Tmax, y =  Y, group = edge.id, color = Y)) +
+
+    geom_line(alpha = 1, linewidth = 0.5) +
+
+    scale_color_gradientn(colours = rev(rainbow(5, start = 0, end = 0.7)) ) +
+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          panel.background = element_rect(fill = "transparent",colour = NA),
+          plot.background = element_rect(fill = "transparent",colour = NA),
+          axis.line = element_line(colour = "black"),
+          axis.title.x = element_text(size = 18),
+          axis.text.x = element_text(size = 16),
+          axis.title.y = element_text(size = 18),
+          axis.text.y = element_text(size = 16),
+          plot.margin = unit(c(2.3,0.87,0.1,0.1), 'cm'),
+          legend.position = 'none') +
+
+    xlab('time') + ylab('rate') +
+
+    scale_x_continuous(limits = c(-round(Tmax + 5, 0), 0),
+                       breaks = -1*seq(from = 0, to = Tmax, by = Tmax/5) %>% round(0),
+                       labels = seq(from = 0, to = Tmax, by = Tmax/5) %>% round(0) ) +
+    scale_y_continuous(limits = c(0, round(max(prof_stat$Y)*1.2, 3))) +
+    coord_cartesian(expand = FALSE)
+
+  vp <- viewport(height = unit(0.5,"npc"), width = unit(1, "npc"), just = c("left",'top'), y = 0.5, x = 0)
+
+  print(plot_edgeprof, vp = vp)
 
 }
 

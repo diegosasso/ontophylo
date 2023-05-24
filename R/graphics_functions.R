@@ -33,7 +33,7 @@ get_vector_ids_per_term <- function(term = 'HAO:0000349', ONT, GR) {
   GR <- as_tibble(GR)
 
   GL <- vector("list", nrow(GR))
-  names(GL) <- GR$ID
+  names(GL) <- GR[[2]]
 
   for (i in 1:nrow(GR)){
 
@@ -230,7 +230,7 @@ color.bar <- function(pal, min, max = -min, nticks = 11, ticks = seq(min, max, l
 #' The object should be a PS or ESP vector illustration imported using the grImport package.
 #' Colors are taken from cols.maps argument were the palette indicates the scale of the desired statistics for the evolutionary rates.
 #'
-#' @param picture Picture object.
+#' @param picture grImport object. A vector image imported in R using the 'readPicture' function from grImport.
 #' @param layers numeric. A named vector where values indicate the layer IDs in the Picture object and names indicate the anatomy ontology term labels.
 #' @param cols.maps character. A named vector where elements correspond to color IDs and names indicate the anatomy ontology term labels.
 #'
@@ -239,19 +239,26 @@ color.bar <- function(pal, min, max = -min, nticks = 11, ticks = seq(min, max, l
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' data("HAO", "hym_nhpp", "hym_graph", "hym_img")
+#' data("HAO", "hym_graph", "hym_img", "hym_kde")
+#' # Get picture.
+#' picture <- hym_img
 #' # Get picture layers from three anatomical regions.
 #' terms_list <- as.list(c("HAO:0000397", "HAO:0000576", "HAO:0000626"))
 #' terms_list <- setNames(terms_list, c("head", "mesosoma", "metasoma"))
-#' layers <- get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_graph)
-#' # Get mean rates for an arbitrary branch for three anatomical regions.
-#' stat_list <- lapply(hym_nhpp, function(x) mean(x[[50]]) )
+#' anat_layers <- get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_graph)
+#' # Get mean rates all branches for the three anatomical regions.
+#' plot_stat <- lapply(hym_kde, function(x) unlist(lapply(x$loess.lambda.mean, function(x) mean(x) )) )
+#' plot_stat <- do.call(cbind, plot_stat)
+#' # Select an arbitrary branch.
+#' plot_stat <- plot_stat[50,]
+#' # Set scale.
+#' scale_lim <- range(plot_stat)
 #' # Get color palette.
 #' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
-#' cols_maps <- make_colors_relative_scale(unlist(stat_list), palette = hm.palette(100),
-#'                                         lims = c(min(unlist(stat_list)), max(unlist(stat_list))))
+#' cols_maps <- make_colors_relative_scale(plot_stat, palette = hm.palette(100),
+#'                                         lims = scale_lim)
 #' # Plot picture.
-#' new_pic <- make_pic(hym_img, layers, cols_maps)
+#' new_pic <- make_pic(picture, anat_layers, cols_maps)
 #' \dontrun{
 #' 
 #'   grImport::grid.picture(new_pic)
@@ -269,5 +276,74 @@ make_pic <- function(picture, layers, cols.maps) {
   }
 
   return(picture)
+
+}
+
+
+######################
+#### Plot picture ####
+######################
+
+
+#' @title Plot Picture
+#'
+#' @description Wrapper function for making a plot of an object of class 'Picture' using the 'make_pic' function.
+#'
+#' @param picture grImport object. A vector image imported in R using the 'readPicture' function from grImport.
+#' @param anat_layers numeric. A named vector with the layer IDs obtained using the 'get_vector_ids_list' function.
+#' @param plot_stat numeric. A named vector with values corresponding to the branch statistics to be plotted and names matching the names in the layer IDs.
+#' @param color_palette A character vector or function defining a color palette.
+#' @param scale_lim numeric. A pair of values defining the lower and upper limits of the scale.
+#'
+#' @return A plot of the object of class 'Picture' with the assigned colors to different anatomical regions.
+#'
+#' @author Diego Porto
+#'
+#' @import dplyr 
+#'
+#' @examples
+#' data("HAO", "hym_graph", "hym_img", "hym_kde")
+#' # Get picture.
+#' picture <- hym_img
+#' # Get picture layers from three anatomical regions.
+#' terms_list <- as.list(c("HAO:0000397", "HAO:0000576", "HAO:0000626"))
+#' terms_list <- setNames(terms_list, c("head", "mesosoma", "metasoma"))
+#' anat_layers <- get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_graph)
+#' # Get mean rates all branches for the three anatomical regions.
+#' plot_stat <- lapply(hym_kde, function(x) unlist(lapply(x$loess.lambda.mean, function(x) mean(x) )) )
+#' plot_stat <- do.call(cbind, plot_stat)
+#' # Select an arbitrary branch.
+#' plot_stat <- plot_stat[50,]
+#' # Set scale.
+#' scale_lim <- range(plot_stat)
+#' # Get color palette.
+#' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
+#'
+#' # Plot picture.
+#' \dontrun{
+#' 
+#'   anat_plot(picture, anat_layers, plot_stat, hm.palette(100), scale_lim)
+#' 
+#' }
+#' 
+#' @export
+anat_plot <- function(picture, anat_layers, plot_stat, color_palette, scale_lim) {
+
+  # Set layout to print.
+  layout(matrix(c(1:4), ncol = 2, nrow = 2),
+         heights = c(0.7, 1), widths = c(0.2, 1))
+
+  # Set color bar.
+  color.bar(color_palette, scale_lim[[1]], scale_lim[[2]],
+            ticks = c(scale_lim[[1]], scale_lim[[2]]/2, scale_lim[[2]]) %>%
+              round(., 2), title = "")
+
+  # Set color scale for pictures.
+  cols_maps <- make_colors_relative_scale(plot_stat, palette = color_palette,
+                                          lims = scale_lim)
+  # Make picture.
+  new_pic <- make_pic(picture, anat_layers, cols_maps)
+
+  grid.picture(new_pic)
 
 }
