@@ -334,6 +334,8 @@ merge_tree_cat_list <- function(tree.list) {
   
   tree.list <- lapply(tree.list, function(x) merge_tree_cat(x) )
   
+  tree.list <- do.call(c, tree.list)
+  
   return(tree.list)
   
 }

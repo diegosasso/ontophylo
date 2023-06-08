@@ -4,10 +4,12 @@
 \alias{make_data_NHPP_KDE_Markov_kernel}
 \title{Get NHPP data for all edges (Markov KDE)}
 \usage{
-make_data_NHPP_KDE_Markov_kernel(Tb.trees)
+make_data_NHPP_KDE_Markov_kernel(Tb.trees, add.psd = TRUE)
 }
 \arguments{
 \item{Tb.trees}{data.frame. A tibble obtained with the 'path_hamming_over_trees_KDE' function.}
+
+\item{add.psd}{logical. Whether to add pseudodata or not. Default is TRUE.}
 }
 \value{
 A list with changing times between states for all edges of a given sample of trees.

@@ -4,12 +4,14 @@
 \alias{edgeplot}
 \title{Plot edge profiles and contMap}
 \usage{
-edgeplot(map_stat, prof_stat)
+edgeplot(map_stat, prof_stat, plot.cont = TRUE)
 }
 \arguments{
 \item{map_stat}{contMap object. A contMap obtained using the 'make_contMap_KDE' function.}
 
 \item{prof_stat}{tibble. A tibble with the edgeplot information obtained using the 'edge_profiles4plotting' function.}
+
+\item{plot.cont}{logical. Whether to plot also the contMap or not.}
 }
 \value{
 A plot with the edge profiles and contMap of the selected statistic (e.g. branch rates).

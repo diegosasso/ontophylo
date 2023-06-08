@@ -3,7 +3,6 @@
 export(MultiScale.simmap)
 export(RAC_query)
 export(add_noise_MD)
-export(add_pseudodata)
 export(anat_plot)
 export(color.bar)
 export(derivative_KDE)

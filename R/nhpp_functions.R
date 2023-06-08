@@ -222,6 +222,7 @@ path_hamming <- function(Path) {
 #' @description Gets data on changing times between states for all edges of a given sample of trees for the Markov kernel density estimator (KDE).
 #'
 #' @param Tb.trees data.frame. A tibble obtained with the 'path_hamming_over_trees_KDE' function.
+#' @param add.psd logical. Whether to add pseudodata or not. Default is TRUE.
 #'
 #' @return A list with changing times between states for all edges of a given sample of trees.
 #'
@@ -237,7 +238,7 @@ path_hamming <- function(Path) {
 #' nhpp[[5]]
 #'
 #' @export
-make_data_NHPP_KDE_Markov_kernel <- function(Tb.trees) {
+make_data_NHPP_KDE_Markov_kernel <- function(Tb.trees, add.psd = TRUE) {
 
   Nedges <- Tb.trees$Focal.Edge.id %>% unique() %>% length()
 
@@ -249,6 +250,8 @@ make_data_NHPP_KDE_Markov_kernel <- function(Tb.trees) {
     dt.out[[i]] <- make_data_NHPP_over_edge_MarkovKDE(Tb.trees, Focal.Edge = i)
 
   }
+  
+  if (add.psd == TRUE) {dt.out <- lapply(dt.out, function(x) c((-1*x), x) )}
 
   return(dt.out)
 
@@ -305,7 +308,6 @@ make_data_NHPP_over_edge_MarkovKDE <- function(Tb.trees, Focal.Edge) {
 #' # Check NHPP path data plus pseudodata for an arbitrary branch.
 #' nhpp_psd[[5]]
 #'
-#' @export
 add_pseudodata <- function(Edge.groups, Pseudo.data, Path.data) {
 
   Pseudo.path.data <- vector(length = length(Path.data), mode = 'list')
@@ -1157,6 +1159,7 @@ join_edges <- function(tree.discr, edge.profs) {
 #'
 #' @param map_stat contMap object. A contMap obtained using the 'make_contMap_KDE' function.
 #' @param prof_stat tibble. A tibble with the edgeplot information obtained using the 'edge_profiles4plotting' function.
+#' @param plot.cont logical. Whether to plot also the contMap or not.
 #'
 #' @return A plot with the edge profiles and contMap of the selected statistic (e.g. branch rates).
 #'
@@ -1186,27 +1189,31 @@ join_edges <- function(tree.discr, edge.profs) {
 #' }
 #'
 #' @export
-edgeplot <- function(map_stat, prof_stat) {
-
+edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
+  
   # Get tree height.
   Tmax <- max(nodeHeights(map_stat$tree))
-
-  # Set plot layout.
-  layout(matrix(c(1,2),ncol = 1), heights = c(2,1))
-
-  # Plot contmap.
-  plot.contMap(map_stat, lwd = 3, outline = F, legend = F, ftype = "off",
-               plot = F, mar = c(0.1, 3.45, 0.1, 0.35))
-
+  
+  if (plot.cont == TRUE) {
+    
+    # Set plot layout.
+    layout(matrix(c(1,2),ncol = 1), heights = c(2,1))
+    
+    # Plot contmap.
+    plot.contMap(map_stat, lwd = 3, outline = F, legend = F, ftype = "off",
+                 plot = F, mar = c(0.1, 3.45, 0.1, 0.35)) 
+    
+  }
+  
   # Plot edgeplot.
   plot_edgeprof <-
-
+    
     ggplot(data = prof_stat, aes(x = X-Tmax, y =  Y, group = edge.id, color = Y)) +
-
+    
     geom_line(alpha = 1, linewidth = 0.5) +
-
+    
     scale_color_gradientn(colours = rev(rainbow(5, start = 0, end = 0.7)) ) +
-
+    
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
           panel.background = element_rect(fill = "transparent",colour = NA),
           plot.background = element_rect(fill = "transparent",colour = NA),
@@ -1217,18 +1224,18 @@ edgeplot <- function(map_stat, prof_stat) {
           axis.text.y = element_text(size = 16),
           plot.margin = unit(c(2.3,0.87,0.1,0.1), 'cm'),
           legend.position = 'none') +
-
+    
     xlab('time') + ylab('rate') +
-
+    
     scale_x_continuous(limits = c(-round(Tmax + 5, 0), 0),
                        breaks = -1*seq(from = 0, to = Tmax, by = Tmax/5) %>% round(0),
                        labels = seq(from = 0, to = Tmax, by = Tmax/5) %>% round(0) ) +
     scale_y_continuous(limits = c(0, round(max(prof_stat$Y)*1.2, 3))) +
     coord_cartesian(expand = FALSE)
-
-  vp <- viewport(height = unit(0.5,"npc"), width = unit(1, "npc"), just = c("left",'top'), y = 0.5, x = 0)
-
-  print(plot_edgeprof, vp = vp)
-
+  
+    vp <- viewport(height = unit(0.5,"npc"), width = unit(1, "npc"), just = c("left",'top'), y = 0.5, x = 0)
+    
+    print(plot_edgeprof, vp = vp)
+    
 }
 
