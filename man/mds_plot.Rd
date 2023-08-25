@@ -24,10 +24,14 @@ tree_list <- merge_tree_cat_list(tree_list)
   
   MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = c(0.3,0.3)))
 
-  mds_plot(MD, Tslice = 10)
-  mds_plot(MD, Tslice = 50)
-  mds_plot(MD, Tslice = 200)
-  mds_plot(MD, Tslice = 280)
+  MD_plot <- mds_plot(MD, Tslice = 10)
+  MD_plot
+  MD_plot <- mds_plot(MD, Tslice = 50)
+  MD_plot
+  MD_plot <- mds_plot(MD, Tslice = 200)
+  MD_plot
+  MD_plot <- mds_plot(MD, Tslice = 280)
+  MD_plot
   
 }
 

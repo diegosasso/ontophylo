@@ -20,7 +20,6 @@ data("hym_stm")
 tree_list <- hym_stm[[1]]
 tree_list <- discr_Simmap_all(tree_list, res = 100)
 stm_merg_list <- merge_tree_cat_list(tree_list)
-stm_merg_list <- do.call(c, stm_merg_list)
 # Check some arbitrary branch of some arbitrary tree.
 br1 <- tree_list[[1]]$maps[[50]]
 br1

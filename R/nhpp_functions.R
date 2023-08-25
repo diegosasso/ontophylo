@@ -300,7 +300,7 @@ make_data_NHPP_over_edge_MarkovKDE <- function(Tb.trees, Focal.Edge) {
 #' # Get hamming data from the head characters.
 #' hm <- hym_hm$head
 #' # Make NHPP path data.
-#' nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
+#' nhpp <- make_data_NHPP_KDE_Markov_kernel(hm, add.psd = FALSE)
 #' # Add pseudo data to path data.
 #' psd <- lapply(nhpp, function(x) -x[x < 100] )
 #' edge_groups <- as.list(1:length(hym_tree$edge.length))
@@ -308,6 +308,7 @@ make_data_NHPP_over_edge_MarkovKDE <- function(Tb.trees, Focal.Edge) {
 #' # Check NHPP path data plus pseudodata for an arbitrary branch.
 #' nhpp_psd[[5]]
 #'
+#' @export
 add_pseudodata <- function(Edge.groups, Pseudo.data, Path.data) {
 
   Pseudo.path.data <- vector(length = length(Path.data), mode = 'list')
@@ -349,11 +350,7 @@ return(Pseudo.path.data)
 #' # Get hamming data from the head characters.
 #' hm <- hym_hm$head
 #' # Make NHPP path data.
-#' nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
-#' # Add pseudo data to path data.
-#' psd <- lapply(nhpp, function(x) -x[x < 100] )
-#' edge_groups <- as.list(1:length(hym_tree$edge.length))
-#' nhpp_psd <- add_pseudodata(Edge.groups = edge_groups, Pseudo.data = psd, Path.data = nhpp)
+#' nhpp_psd <- make_data_NHPP_KDE_Markov_kernel(hm, add.psd = TRUE)
 #' # Calculate bandwidth.
 #' bdw <- estimate_band_W(tree_discr, nhpp_psd, band.width = "bw.nrd0")
 #' mean(bdw)
@@ -1237,5 +1234,89 @@ edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
     
     print(plot_edgeprof, vp = vp)
     
+}
+
+
+#' @title Phylogenetic Non-Homogeneous Poisson Process (pNHPP) method
+#'
+#' @description Wrapper function for applying the pNHPP method.
+#'
+#' @param stm_amalg multiSimmap object. A list of amalgamated stochastic maps.
+#' @param tree simmap or phylo object. A reference tree for discretization.
+#' @param res integer. A resolution value for the discretization of tree edges.
+#' @param add.psd logical. Whether to add pseudodata or not in the 'make_data_NHPP_KDE_Markov_kernel' function. Default is TRUE.
+#' @param band.width character. Bandwidth selectors for the KDE in the 'estimate_band_W' function.
+#' @param lambda.post.stat character. A value with the statistic to be used in the 'make_postPois_KDE' function.
+#'
+#' @return A list with the estimated Markov KDE for all edges, the contMap object for plotting the NHPP, and the information necessary for making the edgeplot.
+#'
+#' @author Diego Porto
+#'
+#' @examples
+#' \dontrun{
+#'
+#'   # Load data.
+#'   data("hym_stm", "hym_stm_amalg")
+#'   # Get a reference tree for discretization.
+#'   tree <- hym_stm[[1]][[1]]
+#'   # Get ten samples of stochastic maps from head.
+#'   tree_list <- hym_stm_amalg$head[1:10]
+#'   # Run the pNHPP method.
+#'   nhpp_test <- pNHPP(tree_list, tree, res = 500, add.psd = TRUE, band.width = 'bw.nrd', lambda.post.stat = 'Mean')
+#'
+#' }
+#'
+#' @export
+pNHPP <- function(stm_amalg, tree = tree, res = res, add.psd = TRUE, band.width = c("bw.nrd0", "bw.nrd0", "bw.ucv", "bw.bcv", "bw.SJ"),
+                  lambda.post.stat = 'Mean') {
+
+  # Merge state categories across branches.
+  cat(paste0("\n", "Starting merging state categories: ", Sys.time(), "\n"))
+  stm_merg <- merge_tree_cat_list(stm_amalg)
+  cat(paste0("\n", "Finished merging state categories: ", Sys.time(), "\n"))
+
+  # Calculate Hamming distances.
+  cat(paste0("\n", "Starting calculating hamming distances: ", Sys.time(), "\n"))
+  path_hm <- path_hamming_over_trees_KDE(stm_merg)
+  cat(paste0("\n", "Finished calculating hamming distances: ", Sys.time(), "\n"))
+
+  # Discretize the reference tree.
+  tree_discr <- discr_Simmap(tree, res = res)
+
+  # Make path data for all tips.
+  path_data <- make_data_NHPP_KDE_Markov_kernel(path_hm, add.psd = add.psd)
+
+  # Estimate bandwidth.
+  bdw <- estimate_band_W(tree_discr, path_data, band.width = band.width)
+  bdw <- mean(bdw)
+
+  # Kernel Density Estimation (KDE).
+  cat(paste0("\n", "Starting estimating KDEs: ", Sys.time(), "\n"))
+  edge_KDE <- estimate_edge_KDE(tree_discr, Path.data = path_data, h = bdw)
+  cat(paste0("\n", "Finished estimating KDEs: ", Sys.time(), "\n"))
+
+  # Calculate smoothing.
+  edge_KDE$Maps.mean.loess <- loess_smoothing_KDE(tree_discr, edge_KDE)
+
+  # Normalize KDE data.
+  edge_KDE$Maps.mean.loess.norm <- normalize_KDE(tree_discr, edge_KDE$Maps.mean.loess)
+
+  # Calculate the lambda statistics (lambda zero) of the pNHPP distribution.
+  lambda_post <- posterior_lambda_KDE(stm_merg)
+
+  # Get the posterior distribution.
+  edge_KDE$lambda.mean <- make_postPois_KDE(edge_KDE$Maps.mean.norm, lambda_post, lambda.post.stat = 'Mean')
+  edge_KDE$lambda.mean.loess <- make_postPois_KDE(edge_KDE$Maps.mean.loess.norm, lambda_post, lambda.post.stat = 'Mean')
+
+  ## Making plotting data ##
+  # Make data for contmaps (lambda mean).
+  nhpp_lambda_mean <- make_contMap_KDE(tree_discr, edge_KDE$lambda.mean.loess)
+
+  # Make data for edge profiles (lambda mean).
+  edge_profs_lambda_mean <- edge_profiles4plotting(tree_discr, edge_KDE$lambda.mean.loess)
+
+  # Return results.
+  return(list(edge_KDE = edge_KDE, nhpp_contmap = nhpp_lambda_mean, nhpp_edgeplot = edge_profs_lambda_mean))
+
 }
 

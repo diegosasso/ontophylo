@@ -180,6 +180,8 @@ discr_Simmap <- function(tree, res) {
   }
   
   tree$maps <- maps.n
+
+  class(tree) <- append(class(tree), c('discr_simmap', 'discr_phylo'))
   
   return(tree)        
   
@@ -211,6 +213,8 @@ discr_Simmap_all <- function(tree, res) {
   if (class(tree)[1] == "simmap") {
     
     tree <- discr_Simmap(tree, res)
+
+	class(tree) <- append(class(tree), c('discr_simmap', 'discr_phylo'))
     
   }
   
@@ -221,6 +225,8 @@ discr_Simmap_all <- function(tree, res) {
       tree[[j]] <- discr_Simmap(tree[[j]], res)
       
     }
+
+	class(tree) <- append(class(tree), c('discr_multiSimmap', 'discr_multiPhylo'))
     
   }
   
@@ -321,7 +327,6 @@ merge_tree_cat <- function(tree) {
 #' tree_list <- hym_stm[[1]]
 #' tree_list <- discr_Simmap_all(tree_list, res = 100)
 #' stm_merg_list <- merge_tree_cat_list(tree_list)
-#' stm_merg_list <- do.call(c, stm_merg_list)
 #' # Check some arbitrary branch of some arbitrary tree.
 #' br1 <- tree_list[[1]]$maps[[50]]
 #' br1
@@ -529,5 +534,59 @@ get_rough_state_cols <- function(tree) {
   
   return(setNames(color, states))
   
+}
+
+
+#' @title Reading stochastic character maps file from ReVBayes
+#'
+#' @description Imports stochastic character maps file from RevBayes into R.
+#'
+#' @param file character. Path to the RevBayes file.
+#' @param start integer. First tree of the sample to start reading the RevBayes file.
+#' @param end integer. Last tree of the sample to finish reading the RevBayes file.
+#' @param save character. Name to save output file.
+#'
+#' @return A tree in 'phylip' format.
+#'
+#' @author Sergei Tarasov
+#'
+#' @examples
+#' \dontrun{
+#'
+#'   stm <- read_Simmap_Rev("revbayes.stm", start = 200, end = 500, save = NULL)
+#'   stm <- phytools::read.simmap(text = stm, format = "phylip")
+#'   phytools::plotSimmap(stm[[1]])
+#'
+#' }
+#'
+#' @export
+read_Simmap_Rev <- function(file, start = 1, end = 1, save = NULL) {
+
+  skip = start + 2
+  max2read = end - start + 1
+
+  text <- scan(file = file, sep = "\n", what = "character", skip = skip, nlines = max2read)
+
+  trees <- c()
+  for (i in 1:length(text)) {
+
+    #trees[i]<-strsplit(text[i], "\\}\t\\(")[[1]][2]
+
+    ss = regexpr("\\}\t\\(",  text[i])[1]
+    trees[i] <- substring(text[i], first = ss + 2)
+
+  }
+
+  if (is.null(save)) {
+
+    return(trees)
+
+  } else {
+
+    cat(trees, file = save, sep = "\n")
+    print(paste0("Tree(s) are saved to ", save))
+
+  }
+
 }
 
