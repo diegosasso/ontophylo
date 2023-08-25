@@ -24,7 +24,7 @@ data("hym_hm", "hym_tree")
 # Get hamming data from the head characters.
 hm <- hym_hm$head
 # Make NHPP path data.
-nhpp <- make_data_NHPP_KDE_Markov_kernel(hm)
+nhpp <- make_data_NHPP_KDE_Markov_kernel(hm, add.psd = FALSE)
 # Add pseudo data to path data.
 psd <- lapply(nhpp, function(x) -x[x < 100] )
 edge_groups <- as.list(1:length(hym_tree$edge.length))
