@@ -3,7 +3,7 @@
 -   Authors: Diego Porto and Sergei Tarasov
 -   Maintainer: Diego Porto
 
-This is the alpha version of the package. Please, feel free to try it out, but be aware that the documentations is still incomplete and some functions may have issues! But overall, everything seens to be working well so far...
+This is the release version of the package. Please, feel free to try it out.
 
 -   Install package:
 ```
@@ -18,9 +18,9 @@ https://github.com/diegosasso/ontophylo/issues
 
 
 -   Tutorial and examples:
-https://github.com/diegosasso/ontophylo/XXXXX
+https://github.com/diegosasso/ontophylo_tutorials
 
 
 -   Manuscript describing package:
-https://doi.org/XX.XXXX/XXX/XXX
+https://doi.org/10.1101/2023.06.13.544734
 
