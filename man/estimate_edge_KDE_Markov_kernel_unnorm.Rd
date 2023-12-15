@@ -22,7 +22,7 @@ Estimated the unnormalized Markov KDE for each edge averaged across all possible
 \examples{
 data("hym_nhpp", "hym_tree")
 # Get reference tree.
-tree_discr <- discr_Simmap(hym_tree, res = 4000)
+tree_discr <- discr_Simmap(hym_tree, res = 200)
 # Make NHPP path data.
 nhpp <- hym_nhpp$head
 # Add pseudo data to path data.

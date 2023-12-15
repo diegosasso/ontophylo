@@ -20,7 +20,7 @@ Checks the integral of normalized Markov KDE or normalized loess smoothing over 
 \examples{
 data("hym_kde", "hym_tree")
 # Get reference tree.
-tree_discr <- discr_Simmap(hym_tree, res = 4000)
+tree_discr <- discr_Simmap(hym_tree, res = 200)
 # Get non-normalized and normalized edge KDE data for mean rates.
 Edge_KDE <- hym_kde$head
 # Check integrals.

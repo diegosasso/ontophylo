@@ -6,8 +6,13 @@
 \usage{
 stack_stm(stm.list)
 }
+\arguments{
+\item{stm.list}{list. A list of stochastic maps to be amalgamated.
+
+Internal function. Not exported.}
+}
 \description{
-Internal function. Not exported.
+Stack two discrete stochastic character maps.
 }
 \author{
 Sergei Tarasov

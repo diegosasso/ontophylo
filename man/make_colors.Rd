@@ -18,7 +18,8 @@ A character vector where elements are color IDs and names are the input ontology
 Produces a color scale for a given statistic of evolutionary rate.
 }
 \examples{
-stat <- setNames(runif(5, 0.1, 10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
+stat <- setNames(runif(5, 0.1, 10), 
+c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
 hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
 cols.maps <- make_colors(stat, palette = hm.palette(100))
 cols.maps

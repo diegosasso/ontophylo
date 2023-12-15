@@ -20,7 +20,7 @@ Normalizes the loess smoothing for the Markov KDE.
 \examples{
 data("hym_kde", "hym_tree")
 # Get reference tree.
-tree_discr <- discr_Simmap(hym_tree, res = 4000)
+tree_discr <- discr_Simmap(hym_tree, res = 200)
 # Get non-normalized and normalized edge KDE data.
 Edge_KDE <- hym_kde$head
 # Calculate smoothing of edge KDE data.

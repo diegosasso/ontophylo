@@ -2,7 +2,7 @@ test_that(
   "Testing edge_profiles4plotting()",
   {
 
-    data("hym_tree")
+	hym_tree <- readRDS("../testdata/hym_tree.RDS")
 
     tree_discr <- discr_Simmap(hym_tree, res = 4000)
 

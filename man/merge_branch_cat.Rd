@@ -20,7 +20,7 @@ data("hym_stm")
 tree <- hym_stm[[1]][[1]]
 stm_discr <- discr_Simmap(tree, res = 100)
 # Check some arbitrary branch.
-br1 <- stm_discr$maps[[50]]
+br1 <- stm_discr$maps[[5]]
 br1
 br2 <- merge_branch_cat(br1)
 br2

@@ -6,8 +6,15 @@
 \usage{
 stack2(x, y)
 }
+\arguments{
+\item{x}{list. A list of state names.}
+
+\item{y}{list. A list of state names.
+
+Internal function. Not exported.}
+}
 \description{
-Internal function. Not exported.
+Stack two discrete stochastic character map lists; x and y are the list of state names (i.e. maps).
 }
 \author{
 Sergei Tarasov

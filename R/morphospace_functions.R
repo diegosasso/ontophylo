@@ -21,16 +21,16 @@
 #' @importFrom tibble as_tibble
 #' @importFrom purrr set_names
 #' @importFrom stringdist stringdistmatrix
+#' @importFrom stats cmdscale runif var
 #'
 #' @examples
 #' data("hym_stm_mds")
-#' # Get a sample of 5 amalgamated stochastic maps.
-#' tree_list <- hym_stm_mds
-#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Get a sample of amalgamated stochastic map (phenome).
+#' tree <- merge_tree_cat(hym_stm_mds)
 #' # Multidimensional scaling for an arbitrary tree.
 #' \dontrun{
 #'   
-#'   MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = c(0.3,0.3)))
+#'   MD <- suppressWarnings(MultiScale.simmap(tree))
 #'   
 #' }
 #' 
@@ -96,7 +96,7 @@ MultiScale.simmap <- function(tree.merge, add.noise = NULL) {
   
   
   # get absolute ages of change and join them with M
-  H <- phytools:::nodeHeights(tree.merge)
+  H <- phytools::nodeHeights(tree.merge)
   age.loc <- lapply(Maps, function(x) cumsum(x))
   age.glob <- mapply(function(x,y) x+y, age.loc, H[,1])
   Age <- lapply(age.glob, function(x) x) %>% unlist
@@ -114,9 +114,9 @@ MultiScale.simmap <- function(tree.merge, add.noise = NULL) {
   
   # get start and end coordinates for lines
   L.start <- M[Ed.all$V1,]
-  L.start <- L.start %>% rename(start.V1 = V1, start.V2 = V2, start.time = time, start.sp_extant = sp_extant)
+  L.start <- rename(L.start, all_of(c(start.V1 = "V1", start.V2 = "V2", start.time = "time", start.sp_extant = "sp_extant")))
   L.end <- M[Ed.all$V2,]
-  L.end <- L.end %>% rename(end.V1 = V1, end.V2 = V2, end.time = time, end.sp_extant = sp_extant)
+  L.end <- rename(L.end, all_of(c(start.V1 = "V1", start.V2 = "V2", start.time = "time", start.sp_extant = "sp_extant")))
   Lines.coor <- bind_cols(L.start, L.end) 
   
   MD <- list(Points = M, Lines = Lines.coor, Edge.map = Ed.all)
@@ -139,16 +139,16 @@ MultiScale.simmap <- function(tree.merge, add.noise = NULL) {
 #' @author Sergei Tarasov
 #'
 #' @import dplyr
+#' @importFrom stats runif
 #'
 #' @examples
 #' data("hym_stm_mds")
-#' # Get a sample of 5 amalgamated stochastic maps.
-#' tree_list <- hym_stm_mds
-#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Get a sample of amalgamated stochastic map (phenome).
+#' tree <- merge_tree_cat(hym_stm_mds)
 #' \dontrun{
 #'   
 #'   # Multidimensional scaling for an arbitrary tree.
-#'   MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = NULL))
+#'   MD <- suppressWarnings(MultiScale.simmap(tree))
 #'   
 #'   # Add noise.
 #'   add_noise_MD(MD, c(0.3, 0.3))
@@ -171,9 +171,9 @@ add_noise_MD <- function(MD, add.noise) {
   
   # Update lines
   L.start <- M[MD$Edge.map$V1,]
-  L.start <- L.start %>% rename(start.V1 = V1, start.V2 = V2, start.time = time, start.sp_extant = sp_extant)
+  L.start <- rename(L.start, all_of(c(start.V1 = "V1", start.V2 = "V2", start.time = "time", start.sp_extant = "sp_extant")))
   L.end <- M[MD$Edge.map$V2,]
-  L.end <- L.end %>% rename(end.V1 = V1, end.V2 = V2, end.time = time, end.sp_extant = sp_extant)
+  L.end <- rename(L.end, all_of(c(start.V1 = "V1", start.V2 = "V2", start.time = "time", start.sp_extant = "sp_extant")))
   Lines.coor <- bind_cols(L.start, L.end) 
   MD$Lines <- Lines.coor
   
@@ -196,13 +196,12 @@ add_noise_MD <- function(MD, add.noise) {
 #'
 #' @examples
 #' data("hym_stm_mds")
-#' # Get a sample of 5 amalgamated stochastic maps.
-#' tree_list <- hym_stm_mds
-#' tree_list <- merge_tree_cat_list(tree_list)
+#' # Get a sample of amalgamated stochastic map (phenome).
+#' tree <- merge_tree_cat(hym_stm_mds)
 #' # Multidimensional scaling for an arbitrary tree.
 #' \dontrun{
 #'   
-#'   MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = c(0.3,0.3)))
+#'   MD <- suppressWarnings(MultiScale.simmap(tree))
 #'
 #'   MD_plot <- mds_plot(MD, Tslice = 10)
 #'   MD_plot
@@ -225,17 +224,17 @@ mds_plot <- function(MD, Tslice = max(MD$Points$time)) {
   Tmax <- max(MD$Points$time)
 
   # Filter data according to time slice.
-  MD$Points <- MD$Points %>% filter(time <= Tslice)
+  MD$Points <- filter(MD$Points, MD$Points$time <= Tslice)
 
   # Generate MDS plot.
   GG <-
 
     ggplot(MD$Points) +
 
-    geom_segment(data = MD$Lines, aes(x = start.V1, y = start.V2, xend = end.V1, yend = end.V2),
+    geom_segment(data = MD$Lines, aes(x = MD$Lines$start.V1, y = MD$Lines$start.V2, xend = MD$Lines$end.V1, yend = MD$Lines$end.V2),
                  colour = "red", linewidth = 0.3, linetype = 1, alpha = 0.3) +
 
-    geom_point(aes(x = V1, y = V2, color = time, group = tip.id), alpha = 0.8, size = 1.6) +
+    geom_point(aes(x = MD$Points$V1, y = MD$Points$V2, color = MD$Points$time, group = MD$Points$tip.id), alpha = 0.8, size = 1.6) +
 
     scale_colour_gradient(low = "purple",  high = "green", limits = c(0, Tmax),
                           breaks = seq(50, Tmax, 50), labels = seq(50, Tmax, 50) %>% rev) +

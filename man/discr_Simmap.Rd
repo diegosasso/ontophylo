@@ -22,8 +22,10 @@ data("hym_stm")
 tree <- hym_stm[[1]][[1]]
 stm_discr <- discr_Simmap(tree, res = 100)
 # Check some arbitrary branch.
-tree$maps[[10]]
-stm_discr$maps[[10]]
+tree$maps[[8]]
+stm_discr$maps[[8]]
+sum(tree$maps[[8]])
+sum(stm_discr$maps[[8]])
 
 }
 \author{

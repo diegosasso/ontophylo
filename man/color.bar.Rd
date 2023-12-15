@@ -22,6 +22,8 @@ color.bar(
 
 \item{nticks}{integer. Number of subdivisions of the scale.}
 
+\item{ticks}{integer. A vector of values for the scale.}
+
 \item{title}{character. A legend for the scale bar.}
 }
 \value{

@@ -7,13 +7,13 @@
 get_vector_ids_list(terms_list, ONT, GR)
 }
 \arguments{
+\item{terms_list}{list. A named list with ontology terms to get layer IDs for.
+The first column corresponds to the ontology term labels, the second to the ontology IDs.}
+
 \item{ONT}{ontology_index object.}
 
 \item{GR}{data.frame. A data.frame with the picture information. It contains the matches between all ontology term labels and layer IDs in the Picture object.
 The first column corresponds to the ontology term labels, the second to the ontology IDs, and the third to the layer IDs in the Picture object.}
-
-\item{term_list}{list. A named list with ontology terms to get layer IDs for.
-The first column corresponds to the ontology term labels, the second to the ontology IDs.}
 }
 \value{
 A named vector with the layer IDs corresponding to or descending from the ontology term label queried.

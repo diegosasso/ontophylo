@@ -59,7 +59,7 @@ get_vector_ids_per_term <- function(term = 'HAO:0000349', ONT, GR) {
 #' @description Given an ontology_index object, data.frame with ontology term labels, and data.frame with picture information (see examples),
 #' produces a named vector with layer IDs to be used in the 'make_pic' function.
 #'
-#' @param term_list list. A named list with ontology terms to get layer IDs for.
+#' @param terms_list list. A named list with ontology terms to get layer IDs for.
 #' The first column corresponds to the ontology term labels, the second to the ontology IDs.
 #' @param ONT ontology_index object.
 #' @param GR data.frame. A data.frame with the picture information. It contains the matches between all ontology term labels and layer IDs in the Picture object.
@@ -68,6 +68,8 @@ get_vector_ids_per_term <- function(term = 'HAO:0000349', ONT, GR) {
 #' @return A named vector with the layer IDs corresponding to or descending from the ontology term label queried.
 #'
 #' @author Diego S. Porto
+#'
+#' @importFrom stats setNames
 #'
 #' @examples
 #' data("HAO", "hym_graph")
@@ -106,8 +108,11 @@ get_vector_ids_list <- function(terms_list, ONT, GR) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @importFrom stats setNames
+#'
 #' @examples
-#' stat <- setNames(runif(5, 0.1, 10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
+#' stat <- setNames(runif(5, 0.1, 10), 
+#' c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
 #' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
 #' cols.maps <- make_colors(stat, palette = hm.palette(100))
 #' cols.maps
@@ -124,7 +129,8 @@ make_colors <- function(Stat, palette) {
   names(cols) <- 1:ncols
 
   # remap, scale colors
-  odr <- (1+((ncols - 1)/(lims[2] - lims[1]))*(Stat-lims[1])) %>% round(.,0)
+  odr <- (1+((ncols - 1)/(lims[2] - lims[1]))*(Stat-lims[1]))
+  odr <- round(odr,0)
   cols <- cols[odr]
 
   cols.maps <- setNames(cols, names(Stat))
@@ -146,10 +152,14 @@ make_colors <- function(Stat, palette) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @importFrom stats setNames
+#'
 #' @examples
-#' stat <- setNames(runif(5, 0.1, 10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
+#' stat <- setNames(runif(5, 0.1, 10), 
+#' c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
 #' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
-#' cols.maps <- make_colors_relative_scale(stat, palette = hm.palette(100), lims = c(min(stat), max(stat)))
+#' cols.maps <- make_colors_relative_scale(stat, palette = hm.palette(100), 
+#' lims = c(min(stat), max(stat)))
 #' cols.maps
 #'
 #' @export
@@ -164,7 +174,8 @@ make_colors_relative_scale <- function(Stat, palette, lims) {
   names(cols) <- 1:ncols
 
   # remap, scale colors
-  odr <- (1+((ncols - 1)/(lims[2] - lims[1]))*(Stat-lims[1])) %>% round(.,0)
+  odr <- (1+((ncols - 1)/(lims[2] - lims[1]))*(Stat-lims[1]))
+  odr <- round(odr,0)  
   cols <- cols[odr]
 
   cols.maps <- setNames(cols, names(Stat))
@@ -181,12 +192,15 @@ make_colors_relative_scale <- function(Stat, palette, lims) {
 #' @param pal character. A vector with color IDs.
 #' @param min numeric. Value for lower limit of the scale.
 #' @param max numeric. Value for upper limit of the scale.
+#' @param ticks integer. A vector of values for the scale.
 #' @param nticks integer. Number of subdivisions of the scale.
 #' @param title character. A legend for the scale bar.
 #'
 #' @return A plot of the color scale bar.
 #'
 #' @author Sergei Tarasov
+#'
+#' @importFrom graphics rect axis
 #'
 #' @examples
 #' stat <- runif(10, 0.25, 1)
@@ -249,8 +263,11 @@ color.bar <- function(pal, min, max = -min, nticks = 11, ticks = seq(min, max, l
 #' # Get mean rates all branches for the three anatomical regions.
 #' plot_stat <- lapply(hym_kde, function(x) unlist(lapply(x$loess.lambda.mean, function(x) mean(x) )) )
 #' plot_stat <- do.call(cbind, plot_stat)
+#' # Add two columns for the other anatomical regions (just for this example).
+#' plot_stat <- cbind(plot_stat, plot_stat*0.75, plot_stat*0.5)
+#' colnames(plot_stat) <- c("head", "mesosoma", "metasoma")
 #' # Select an arbitrary branch.
-#' plot_stat <- plot_stat[50,]
+#' plot_stat <- plot_stat[5,]
 #' # Set scale.
 #' scale_lim <- range(plot_stat)
 #' # Get color palette.
@@ -299,7 +316,8 @@ make_pic <- function(picture, layers, cols.maps) {
 #'
 #' @author Diego Porto
 #'
-#' @import dplyr 
+#' @import dplyr
+#' @importFrom grImport grid.picture
 #'
 #' @examples
 #' data("HAO", "hym_graph", "hym_img", "hym_kde")
@@ -312,8 +330,11 @@ make_pic <- function(picture, layers, cols.maps) {
 #' # Get mean rates all branches for the three anatomical regions.
 #' plot_stat <- lapply(hym_kde, function(x) unlist(lapply(x$loess.lambda.mean, function(x) mean(x) )) )
 #' plot_stat <- do.call(cbind, plot_stat)
+#' # Add two columns for the other anatomical regions (just for this example).
+#' plot_stat <- cbind(plot_stat, plot_stat*0.75, plot_stat*0.5)
+#' colnames(plot_stat) <- c("head", "mesosoma", "metasoma")
 #' # Select an arbitrary branch.
-#' plot_stat <- plot_stat[50,]
+#' plot_stat <- plot_stat[5,]
 #' # Set scale.
 #' scale_lim <- range(plot_stat)
 #' # Get color palette.
@@ -335,8 +356,7 @@ anat_plot <- function(picture, anat_layers, plot_stat, color_palette, scale_lim)
 
   # Set color bar.
   color.bar(color_palette, scale_lim[[1]], scale_lim[[2]],
-            ticks = c(scale_lim[[1]], scale_lim[[2]]/2, scale_lim[[2]]) %>%
-              round(., 2), title = "")
+            ticks = round(c(scale_lim[[1]], scale_lim[[2]]/2, scale_lim[[2]]), 2), title = "")
 
   # Set color scale for pictures.
   cols_maps <- make_colors_relative_scale(plot_stat, palette = color_palette,

@@ -24,12 +24,13 @@ data("hym_stm")
 # Select the first five characters.
 tree_list <- hym_stm[1:5]
 tree_list <- lapply(tree_list, function(x) discr_Simmap_all(x, res = 100))
-tree_list_amalg <- paramo.list(names(tree_list), tree_list, ntrees = 100)
+tree_list_amalg <- paramo.list(names(tree_list), tree_list, ntrees = 50)
 tree_list_amalg <- do.call(c, tree_list_amalg)
 # Plot one amalgamated stochastic map.
 \dontrun{
 
-  phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+  phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  
+  lwd = 3, pts = F,ftype = "off")
 
 }
 

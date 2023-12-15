@@ -1,5 +1,9 @@
 
 
+### IMPORTS ###
+#' @importFrom stats bw.SJ bw.bcv bw.nrd bw.nrd0 bw.ucv predict rgamma qgamma loess.control
+
+
 ################################
 #### Path hamming functions ####
 ################################
@@ -37,7 +41,7 @@ path_hamming_over_trees_KDE <- function(tree.list) {
     tr <- tree.list[[i]]
     tr.i <- path_hamming_over_all_edges(tr)
     tr.i <- mutate(tr.i, tree.id = i)
-    tr.i <- mutate(tr.i, tree.tip.id = paste0(tree.id,'-', Focal.Edge.id))
+    tr.i <- mutate(tr.i, tree.tip.id = paste0(tr.i$tree.id,'-', tr.i$Focal.Edge.id))
     Dist.trees <- bind_rows(Dist.trees, tr.i)
 
   }
@@ -99,6 +103,9 @@ path_hamming_over_all_edges <- function(tree.merge) {
 
 #' Get state information about a given path.
 #'
+#' @param tree.merge simmap object.
+#' @param node integer.
+#'
 #' Internal function. Not exported.
 #'
 #' @author Sergei Tarasov
@@ -107,7 +114,7 @@ get_states_path <- function(tree.merge, node) {
 
   Maps <- tree.merge$maps
   # get absolute ages
-  #H <- phytools:::nodeHeights(tree.merge)
+  #H <- phytools::nodeHeights(tree.merge)
   #age.loc <- lapply(Maps, function(x) cumsum(x))
   #Maps.abs <-mapply(function(x,y) x+y, age.loc, H[,1] )
 
@@ -153,7 +160,7 @@ get_states_path <- function(tree.merge, node) {
   }
   ###
 
-  Int <- mutate(Int,  delta.t = t.end-t.start)
+  Int <- mutate(Int,  delta.t = Int$t.end-Int$t.start)
 
   return(Int)
 
@@ -161,6 +168,9 @@ get_states_path <- function(tree.merge, node) {
 
 
 #' Get edges IDs from root to a given node.
+#'
+#' @param tree.merge simmap object.
+#' @param node integer.
 #'
 #' Internal function. Not exported.
 #'
@@ -274,7 +284,7 @@ make_data_NHPP_KDE_Markov_kernel <- function(Tb.trees, add.psd = TRUE) {
 make_data_NHPP_over_edge_MarkovKDE <- function(Tb.trees, Focal.Edge) {
 
   #Focal.Edge <- 1
-  f.tip <- filter(Tb.trees, Focal.Edge.id == Focal.Edge)
+  f.tip <- filter(Tb.trees, Tb.trees$Focal.Edge.id == Focal.Edge)
   change.time <- f.tip$t.start
   change.time <- change.time[-which(change.time == 0)]
 
@@ -346,7 +356,7 @@ return(Pseudo.path.data)
 #' @examples
 #' data("hym_hm", "hym_tree")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get hamming data from the head characters.
 #' hm <- hym_hm$head
 #' # Make NHPP path data.
@@ -404,7 +414,7 @@ estimate_band_W <- function(tree.discr, data.path, band.width = c('bw.nrd0', 'bw
 #' @examples
 #' data("hym_nhpp", "hym_tree")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Make NHPP path data.
 #' nhpp <- hym_nhpp$head
 #' # Add pseudo data to path data.
@@ -428,8 +438,8 @@ estimate_edge_KDE <- function(tree.discr, Path.data, h) {
   Edge.KDE <- estimate_edge_KDE_Markov_kernel_unnorm(tree.discr, Path.data = Path.data , h = h)
   # normalize KDE
   #res <- 1000
-  #Tmax <- max(phytools:::nodeHeights(tree.discr))
-  #ss <- 0:res/res * max(phytools:::nodeHeights(tree.discr))
+  #Tmax <- max(phytools::nodeHeights(tree.discr))
+  #ss <- 0:res/res * max(phytools::nodeHeights(tree.discr))
   #ss[1]-ss[2]
   #delta <- Tmax/1000
 
@@ -465,7 +475,7 @@ estimate_edge_KDE <- function(tree.discr, Path.data, h) {
 #' @examples
 #' data("hym_nhpp", "hym_tree")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Make NHPP path data.
 #' nhpp <- hym_nhpp$head
 #' # Add pseudo data to path data.
@@ -489,7 +499,7 @@ estimate_edge_KDE_Markov_kernel_unnorm <- function(tree.discr, Path.data, h = 10
   #Maps.error <- Maps
   # absolute ages
   #tree.discr$edge
-  H <- phytools:::nodeHeights(tree.discr)
+  H <- phytools::nodeHeights(tree.discr)
   age.loc <- lapply(Maps, function(x) cumsum(x))
   age.glob <- mapply(function(x,y) x+y, age.loc, H[,1])
 
@@ -534,6 +544,10 @@ estimate_edge_KDE_Markov_kernel_unnorm <- function(tree.discr, Path.data, h = 10
 
 #' KDE for unnormalized Markov kernel.
 #'
+#' @param x numeric. A vector with global changing times.
+#' @param dat numeric. A vector with path data values.
+#' @param h numeric. The bandwidth value.
+#'
 #' Internal function. Not exported.
 #'
 #' @author Sergei Tarasov
@@ -548,6 +562,10 @@ KDE_unnormalized_scalar_Markov_kernel <- function(x, h, dat) {
 
 
 #' KDE for unnormalized Markov kernel vectorized.
+#'
+#' @param x numeric. A vector with global changing times.
+#' @param dat numeric. A vector with path data values.
+#' @param h numeric. The bandwidth value.
 #'
 #' Internal function. Not exported.
 #'
@@ -570,7 +588,7 @@ KDE_unnorm_trunc_Markov <- Vectorize(KDE_unnormalized_scalar_Markov_kernel, vect
 #' @examples
 #' data("hym_kde", "hym_tree")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get non-normalized and normalized edge KDE data.
 #' Edge_KDE <- hym_kde$head
 #' # Calculate smoothing of edge KDE data.
@@ -586,7 +604,7 @@ loess_smoothing_KDE <- function(tree.discr, Edge.KDE) {
   # plot edge profiles
   Maps <- tree.discr$maps
   # absolute ages
-  H <- phytools:::nodeHeights(tree.discr)
+  H <- phytools::nodeHeights(tree.discr)
   age.loc <- lapply(Maps, function(x) cumsum(x))
   age.glob <- mapply(function(x,y) x+y, age.loc, H[,1] )
 
@@ -633,7 +651,7 @@ loess_smoothing_KDE <- function(tree.discr, Edge.KDE) {
 #' @examples
 #' data("hym_kde", "hym_tree")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get non-normalized and normalized edge KDE data.
 #' Edge_KDE <- hym_kde$head
 #' # Calculate smoothing of edge KDE data.
@@ -677,7 +695,7 @@ normalize_KDE <- function(tree.discr, Maps.mean.loess) {
 #' @examples
 #' data("hym_kde", "hym_tree")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get non-normalized and normalized edge KDE data for mean rates.
 #' Edge_KDE <- hym_kde$head
 #' # Check integrals.
@@ -691,8 +709,8 @@ integrate_edge_KDE <- function(tree.discr, Edge.KDE.list) {
 
   # normalize KDE
   #res <- 1000
-  #Tmax <- max(phytools:::nodeHeights(tree.discr))
-  #ss <- 0:res/res * max(phytools:::nodeHeights(tree.discr))
+  #Tmax <- max(phytools::nodeHeights(tree.discr))
+  #ss <- 0:res/res * max(phytools::nodeHeights(tree.discr))
   #ss[1]-ss[2]
   #delta <- Tmax/1000
 
@@ -808,6 +826,7 @@ posterior_lambda_KDE_Distr <- function(tree.list, n.sim = 10, BR.name) {
 
 }
 
+
 #' @title Make posterior distribution of NHPP
 #'
 #' @description Produces a posterior distribution from a given list of statistics calculated with the 'posterior_lambda_KDE' function.
@@ -867,7 +886,7 @@ make_postPois_KDE <- function(Edge.KDE.stat, lambda.post, lambda.post.stat = 'Me
 #' @examples
 #' data("hym_tree", "hym_kde")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get smoothing of normalized edge KDE data for mean rates.
 #' Edge_KDE <- hym_kde$head
 #' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
@@ -964,10 +983,12 @@ derivative_KDE <- function(tree.discr, Edge.KDE.stat) {
 #'
 #' @author Sergei Tarasov
 #'
+#' @importFrom grDevices rainbow
+#'
 #' @examples
 #' data("hym_tree", "hym_kde")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get smoothing of normalized edge KDE data for mean rates.
 #' Edge_KDE <- hym_kde$head
 #' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
@@ -992,7 +1013,7 @@ make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
   Maps.mean <- Edge.KDE.stat
 
   # absolute ages
-  #H <- phytools:::nodeHeights(tree.discr)
+  #H <- phytools::nodeHeights(tree.discr)
   #age.loc <- lapply(Maps, function(x) cumsum(x))
   #age.glob <-mapply(function(x,y) x+y, age.loc, H[,1] )
 
@@ -1011,7 +1032,8 @@ make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
   for (i in 1:length(Maps.col)) {
 
     b <- Maps.mean[[i]]
-    d <- sapply(b, phytools:::getState, trans = trans)
+    #d <- sapply(b, phytools:::getState, trans = trans)
+	d <- sapply(b, function(x) get_state(vec = trans, x = x))
     names(Maps.col[[i]]) <- d
 
   }
@@ -1024,6 +1046,66 @@ make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
   class(xx) <- "contMap"
 
   return(xx)
+
+}
+
+
+#' Get state name for contMap plotting.
+#'
+#' Internal function. Not exported.
+#'
+#' @param vec numeric. A vector of intervals defining bins.
+#' @param x numeric. A target value.
+#'
+#' @author Diego Porto
+#'
+get_state <- function(vec, x) {
+
+  low_vec <- 1
+  upp_vec <- length(vec)
+
+  if (vec[low_vec] == x) {
+
+    # Target value is the lowest #
+    return(names(vec[low_vec]))
+
+  } else if (vec[upp_vec] == x) {
+
+    # Target value is the highest #
+    return(names(vec[upp_vec]))
+
+  } else {
+
+    while (low_vec <= upp_vec) {
+
+      mid_vec <- floor((low_vec + upp_vec)/2)
+
+      start_vec <- vec[mid_vec]
+      end_vec <- vec[mid_vec + 1]
+
+      if (x > start_vec && x <= end_vec) {
+
+        # Target value found in the current interval #
+        return(names(vec[mid_vec]))
+
+      } else if (x <= start_vec) {
+
+        # Search in the left half #
+        upp_vec <- mid_vec - 1
+
+      } else {
+
+        # Search in the right half #
+        low_vec <- mid_vec + 1
+
+      }
+
+    }
+
+    # Target value not found #
+    return(NULL)
+
+  }
 
 }
 
@@ -1051,7 +1133,7 @@ make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
 #' @examples
 #' data("hym_tree", "hym_kde")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get smoothing of normalized edge KDE data for mean rates.
 #' Edge_KDE <- hym_kde$head
 #' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
@@ -1064,14 +1146,14 @@ edge_profiles4plotting <- function(tree.discr, Edge.KDE.stat) {
   # plot edge profiles
   Maps <- tree.discr$maps
   # absolute ages
-  H <- phytools:::nodeHeights(tree.discr)
+  H <- phytools::nodeHeights(tree.discr)
   age.loc <- lapply(Maps, function(x) cumsum(x))
   age.glob <- mapply(function(x,y) x+y, age.loc, H[,1])
 
-  v.x <- age.glob %>% enframe(name = "edge.id", value = "X") %>% unnest(cols = c(X))
+  v.x <- age.glob %>% enframe(name = "edge.id", value = "X") %>% unnest(cols = "X")
   #v.x$edge.id %>% unique()
   #v.y <- Edge.KDE$lambda.mean  %>% enframe(name = "edge.id", value = "Y") %>% unnest()
-  v.y <- Edge.KDE.stat  %>% enframe(name = "edge.id", value = "Y") %>% unnest(cols = c(Y))
+  v.y <- Edge.KDE.stat  %>% enframe(name = "edge.id", value = "Y") %>% unnest(cols = "Y")
 
   #edge.profs <- bind_cols(v.x,v.y)
   edge.profs <- mutate(v.x,v.y)
@@ -1106,6 +1188,9 @@ edge_profiles4plotting <- function(tree.discr, Edge.KDE.stat) {
 #'
 #' Internal function. Not exported.
 #'
+#' @param tree.discr phylo object. A discretized tree using the 'discr_Simmap' function.
+#' @param edge.profs tibble. A tibble with edge profile information.
+#'
 #' @author Sergei Tarasov
 #' @import dplyr
 #' @importFrom tibble tibble
@@ -1126,14 +1211,14 @@ join_edges <- function(tree.discr, edge.profs) {
   for (i in E.map.nontip ) {
 
     # focal edge, last X,Y coords
-    parent.edge <- filter(edge.profs, edge.id == i)
+    parent.edge <- filter(edge.profs, edge.profs$edge.id == i)
     Par <- parent.edge[nrow(parent.edge),]
 
     # descendant eges
     descen.edges <- which(E.map[,1] == E.map[i,2])
     #descen.edges <- E.map[(E.map[,1] %in% E.map[i,2]),]
-    Des1 <- filter(edge.profs, edge.id == descen.edges[1])[1,]
-    Des2 <- filter(edge.profs, edge.id == descen.edges[2])[1,]
+    Des1 <- filter(edge.profs, edge.profs$edge.id == descen.edges[1])[1,]
+    Des2 <- filter(edge.profs, edge.profs$edge.id == descen.edges[2])[1,]
 
     # joints <- bind_rows(Par, Des1, Par, Des2)
     # joints <- mutate(joints, groups = paste0(i, c('a', 'a', 'b', 'b')))
@@ -1166,11 +1251,13 @@ join_edges <- function(tree.discr, edge.profs) {
 #' @import phytools
 #' @import ggplot2
 #' @import grid
+#' @importFrom graphics layout
+#' @importFrom grDevices rainbow
 #'
 #' @examples
 #' data("hym_tree", "hym_kde")
 #' # Get reference tree.
-#' tree_discr <- discr_Simmap(hym_tree, res = 4000)
+#' tree_discr <- discr_Simmap(hym_tree, res = 200)
 #' # Get smoothing of normalized edge KDE data for mean rates.
 #' Edge_KDE <- hym_kde$head
 #' Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
@@ -1205,7 +1292,7 @@ edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
   # Plot edgeplot.
   plot_edgeprof <-
     
-    ggplot(data = prof_stat, aes(x = X-Tmax, y =  Y, group = edge.id, color = Y)) +
+    ggplot(data = prof_stat, aes(x = prof_stat$X-Tmax, y =  prof_stat$Y, group = prof_stat$edge.id, color = prof_stat$Y)) +
     
     geom_line(alpha = 1, linewidth = 0.5) +
     
@@ -1262,7 +1349,8 @@ edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
 #'   # Get ten samples of stochastic maps from head.
 #'   tree_list <- hym_stm_amalg$head[1:10]
 #'   # Run the pNHPP method.
-#'   nhpp_test <- pNHPP(tree_list, tree, res = 500, add.psd = TRUE, band.width = 'bw.nrd', lambda.post.stat = 'Mean')
+#'   nhpp_test <- pNHPP(tree_list, tree, res = 500, 
+#'   add.psd = TRUE, band.width = 'bw.nrd', lambda.post.stat = 'Mean')
 #'
 #' }
 #'

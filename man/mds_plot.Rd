@@ -16,13 +16,12 @@ Wrapper function for plotting morphospaces obtained using the MultiScale.simmap'
 }
 \examples{
 data("hym_stm_mds")
-# Get a sample of 5 amalgamated stochastic maps.
-tree_list <- hym_stm_mds
-tree_list <- merge_tree_cat_list(tree_list)
+# Get a sample of amalgamated stochastic map (phenome).
+tree <- merge_tree_cat(hym_stm_mds)
 # Multidimensional scaling for an arbitrary tree.
 \dontrun{
   
-  MD <- suppressWarnings(MultiScale.simmap(tree_list[[1]], add.noise = c(0.3,0.3)))
+  MD <- suppressWarnings(MultiScale.simmap(tree))
 
   MD_plot <- mds_plot(MD, Tslice = 10)
   MD_plot

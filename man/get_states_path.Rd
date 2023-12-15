@@ -6,8 +6,15 @@
 \usage{
 get_states_path(tree.merge, node)
 }
+\arguments{
+\item{tree.merge}{simmap object.}
+
+\item{node}{integer.
+
+Internal function. Not exported.}
+}
 \description{
-Internal function. Not exported.
+Get state information about a given path.
 }
 \author{
 Sergei Tarasov

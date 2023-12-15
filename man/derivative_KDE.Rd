@@ -20,7 +20,7 @@ Calculates the derivative of the normalized Markov KDE or normalized loess smoot
 \examples{
 data("hym_tree", "hym_kde")
 # Get reference tree.
-tree_discr <- discr_Simmap(hym_tree, res = 4000)
+tree_discr <- discr_Simmap(hym_tree, res = 200)
 # Get smoothing of normalized edge KDE data for mean rates.
 Edge_KDE <- hym_kde$head
 Edge_KDE_stat <- Edge_KDE$loess.lambda.mean

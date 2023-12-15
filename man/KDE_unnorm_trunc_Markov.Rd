@@ -6,8 +6,17 @@
 \usage{
 KDE_unnorm_trunc_Markov(x, h, dat)
 }
+\arguments{
+\item{x}{numeric. A vector with global changing times.}
+
+\item{h}{numeric. The bandwidth value.
+
+Internal function. Not exported.}
+
+\item{dat}{numeric. A vector with path data values.}
+}
 \description{
-Internal function. Not exported.
+KDE for unnormalized Markov kernel vectorized.
 }
 \author{
 Sergei Tarasov

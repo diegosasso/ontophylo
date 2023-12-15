@@ -42,7 +42,8 @@ Wrapper function for applying the pNHPP method.
   # Get ten samples of stochastic maps from head.
   tree_list <- hym_stm_amalg$head[1:10]
   # Run the pNHPP method.
-  nhpp_test <- pNHPP(tree_list, tree, res = 500, add.psd = TRUE, band.width = 'bw.nrd', lambda.post.stat = 'Mean')
+  nhpp_test <- pNHPP(tree_list, tree, res = 500, 
+  add.psd = TRUE, band.width = 'bw.nrd', lambda.post.stat = 'Mean')
 
 }
 

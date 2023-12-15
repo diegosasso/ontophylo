@@ -32,8 +32,11 @@ anat_layers <- get_vector_ids_list(terms = terms_list , ONT = HAO, GR = hym_grap
 # Get mean rates all branches for the three anatomical regions.
 plot_stat <- lapply(hym_kde, function(x) unlist(lapply(x$loess.lambda.mean, function(x) mean(x) )) )
 plot_stat <- do.call(cbind, plot_stat)
+# Add two columns for the other anatomical regions (just for this example).
+plot_stat <- cbind(plot_stat, plot_stat*0.75, plot_stat*0.5)
+colnames(plot_stat) <- c("head", "mesosoma", "metasoma")
 # Select an arbitrary branch.
-plot_stat <- plot_stat[50,]
+plot_stat <- plot_stat[5,]
 # Set scale.
 scale_lim <- range(plot_stat)
 # Get color palette.

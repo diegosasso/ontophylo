@@ -1,4 +1,7 @@
 
+### IMPORTS ###
+#' @importFrom stats setNames
+
 
 #######################################################
 ##### Organizing ontology terms and character IDs #####
@@ -155,14 +158,16 @@ RAC_query <- function(char_info, ONT, terms) {
 #' tree <- hym_stm[[1]][[1]]
 #' stm_discr <- discr_Simmap(tree, res = 100)
 #' # Check some arbitrary branch.
-#' tree$maps[[10]]
-#' stm_discr$maps[[10]]
+#' tree$maps[[8]]
+#' stm_discr$maps[[8]]
+#' sum(tree$maps[[8]])
+#' sum(stm_discr$maps[[8]])
 #'
 #' @export
 discr_Simmap <- function(tree, res) {
   
-  steps <- 0:res/res * max(phytools:::nodeHeights(tree))
-  H <- phytools:::nodeHeights(tree)
+  steps <- 0:res/res * max(phytools::nodeHeights(tree))
+  H <- phytools::nodeHeights(tree)
   maps.n <- vector(mode = "list", length = nrow(tree$edge))
   
   for (i in 1:nrow(tree$edge)) {
@@ -204,8 +209,10 @@ discr_Simmap <- function(tree, res) {
 #' tree_list <- hym_stm[[1]]
 #' stm_discr_list <- discr_Simmap_all(tree_list, res = 100)
 #' # Check some arbitrary branch of some arbitrary tree.
-#' tree_list[[1]]$maps[[10]]
-#' stm_discr_list[[1]]$maps[[10]]
+#' tree_list[[1]]$maps[[8]]
+#' stm_discr_list[[1]]$maps[[8]]
+#' sum(tree_list[[1]]$maps[[8]])
+#' sum(stm_discr_list[[1]]$maps[[8]])
 #'
 #' @export
 discr_Simmap_all <- function(tree, res) {
@@ -250,7 +257,7 @@ discr_Simmap_all <- function(tree, res) {
 #' tree <- hym_stm[[1]][[1]]
 #' stm_discr <- discr_Simmap(tree, res = 100)
 #' # Check some arbitrary branch.
-#' br1 <- stm_discr$maps[[50]]
+#' br1 <- stm_discr$maps[[5]]
 #' br1
 #' br2 <- merge_branch_cat(br1)
 #' br2
@@ -296,9 +303,9 @@ merge_branch_cat <- function(br) {
 #' tree <- discr_Simmap(tree, res = 100)
 #' stm_merg <- merge_tree_cat(tree)
 #' # Check some arbitrary branch.
-#' br1 <- tree$maps[[50]]
+#' br1 <- tree$maps[[5]]
 #' br1
-#' br2 <- stm_merg$maps[[50]]
+#' br2 <- stm_merg$maps[[5]]
 #' br2
 #' sum(br1) == br2
 #'
@@ -328,9 +335,9 @@ merge_tree_cat <- function(tree) {
 #' tree_list <- discr_Simmap_all(tree_list, res = 100)
 #' stm_merg_list <- merge_tree_cat_list(tree_list)
 #' # Check some arbitrary branch of some arbitrary tree.
-#' br1 <- tree_list[[1]]$maps[[50]]
+#' br1 <- tree_list[[1]]$maps[[5]]
 #' br1
-#' br2 <- stm_merg_list[[1]]$maps[[50]]
+#' br2 <- stm_merg_list[[1]]$maps[[5]]
 #' br2
 #' sum(br1) == br2
 #'
@@ -353,6 +360,8 @@ merge_tree_cat_list <- function(tree.list) {
 
 #' Stack two discrete stochastic character maps.
 #'
+#' @param stm.list list. A list of stochastic maps to be amalgamated.
+#'
 #' Internal function. Not exported.
 #'
 #' @author Sergei Tarasov
@@ -374,6 +383,9 @@ stack_stm <- function(stm.list) {
 
 
 #' Stack two discrete stochastic character map lists; x and y are the list of state names (i.e. maps).
+#'
+#' @param x list. A list of state names.
+#' @param y list. A list of state names.
 #'
 #' Internal function. Not exported.
 #'
@@ -403,12 +415,13 @@ stack2 <- function(x,y) {
 #' # Select the first five characters.
 #' tree_list <- hym_stm[1:5]
 #' tree_list <- lapply(tree_list, function(x) discr_Simmap_all(x, res = 100))
-#' tree_list_amalg <- paramo.list(names(tree_list), tree_list, ntrees = 100)
+#' tree_list_amalg <- paramo.list(names(tree_list), tree_list, ntrees = 50)
 #' tree_list_amalg <- do.call(c, tree_list_amalg)
 #' # Plot one amalgamated stochastic map.
 #' \dontrun{
 #' 
-#'   phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#'   phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  
+#'   lwd = 3, pts = F,ftype = "off")
 #' 
 #' }
 #'
@@ -460,7 +473,7 @@ paramo.list <- function(cc, tree.list, ntrees = 1) {
 #' # Subset the list of multiple maps.
 #' tree_list <- hym_stm[unname(unlist(query))]
 #' tree_list <- lapply(tree_list, function(x) discr_Simmap_all(x, res = 100))
-#' tree_list_amalg <- paramo(query, tree_list, ntrees = 100)
+#' tree_list_amalg <- paramo(query, tree_list, ntrees = 50)
 #' tree_list_amalg <- lapply(tree_list_amalg, function(x) do.call(c,x) )
 #' # Get one sample of map from head.
 #' stm_hd <- tree_list_amalg$head[[1]]
@@ -471,9 +484,12 @@ paramo.list <- function(cc, tree.list, ntrees = 1) {
 #' # Plot one amalgamated stochastic map from each anatomical region.
 #' \dontrun{
 #' 
-#'   phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
-#'   phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
-#'   phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#'   phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd), 
+#'   lwd = 3, pts = F,ftype = "off")
+#'   phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms), 
+#'   lwd = 3, pts = F,ftype = "off")
+#'   phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt), 
+#'   lwd = 3, pts = F,ftype = "off")
 #' 
 #' }
 #'
@@ -510,6 +526,7 @@ paramo <- function(rac_query, tree.list, ntrees) {
 #' @author Sergei Tarasov
 #'
 #' @import RColorBrewer
+#' @importFrom grDevices colorRampPalette
 #'
 #' @examples
 #' data("hym_stm_amalg")
@@ -518,7 +535,8 @@ paramo <- function(rac_query, tree.list, ntrees) {
 #' # Plot one amalgamated stochastic map from head.
 #' \dontrun{
 #' 
-#'   phytools::plotSimmap(tree, get_rough_state_cols(tree),  lwd = 3, pts = F,ftype = "off", ylim = c(0,100))
+#'   phytools::plotSimmap(tree, get_rough_state_cols(tree), 
+#'   lwd = 3, pts = F,ftype = "off")
 #' 
 #' }
 #'

@@ -26,7 +26,7 @@ Estimate the bandwidth for the Markov KDE.
 \examples{
 data("hym_hm", "hym_tree")
 # Get reference tree.
-tree_discr <- discr_Simmap(hym_tree, res = 4000)
+tree_discr <- discr_Simmap(hym_tree, res = 200)
 # Get hamming data from the head characters.
 hm <- hym_hm$head
 # Make NHPP path data.

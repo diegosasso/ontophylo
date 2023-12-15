@@ -21,9 +21,9 @@ tree_list <- hym_stm[[1]]
 tree_list <- discr_Simmap_all(tree_list, res = 100)
 stm_merg_list <- merge_tree_cat_list(tree_list)
 # Check some arbitrary branch of some arbitrary tree.
-br1 <- tree_list[[1]]$maps[[50]]
+br1 <- tree_list[[1]]$maps[[5]]
 br1
-br2 <- stm_merg_list[[1]]$maps[[50]]
+br2 <- stm_merg_list[[1]]$maps[[5]]
 br2
 sum(br1) == br2
 

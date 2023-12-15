@@ -6,6 +6,11 @@
 \usage{
 join_edges(tree.discr, edge.profs)
 }
+\arguments{
+\item{tree.discr}{phylo object. A discretized tree using the 'discr_Simmap' function.}
+
+\item{edge.profs}{tibble. A tibble with edge profile information.}
+}
 \description{
 Internal function. Not exported.
 }

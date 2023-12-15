@@ -6,8 +6,15 @@
 \usage{
 get_path_edges(tree.merge, node)
 }
+\arguments{
+\item{tree.merge}{simmap object.}
+
+\item{node}{integer.
+
+Internal function. Not exported.}
+}
 \description{
-Internal function. Not exported.
+Get edges IDs from root to a given node.
 }
 \author{
 Sergei Tarasov
