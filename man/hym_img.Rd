@@ -22,6 +22,6 @@ data(hym_img)
 }
 \references{
 Murrell, P. (2009). Importing vector graphics: The grimport package for r. Journal of Statistical Software, 30:1–37.
-(\href{https://doi.org/10.18637/jss.v030.i04}{Read})
+(\doi{10.18637/jss.v030.i04})
 }
 \keyword{datasets}

@@ -20,6 +20,6 @@ data(hym_tree)
 }
 \references{
 Klopfstein, S., Vilhelmsen, L., Heraty, J.M., Sharkey, M. & Ronquist, F. (2013) The hymenopteran tree of life: evidence from protein-coding genes and objectively aligned ribosomal data. PLoS One, 8, e69344.
-(\href{https://doi.org/10.1371/journal.pone.0069344}{Read})
+(\doi{10.1371/journal.pone.0069344})
 }
 \keyword{datasets}

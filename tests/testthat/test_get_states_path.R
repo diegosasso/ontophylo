@@ -5,7 +5,7 @@ test_that(
     stm <- readRDS("../testdata/stm_amalg_test.RDS")
     stm <- stm[[1]]
 
-    node = 40
+    node = 3
 
     st_ph <- suppressWarnings(ontophylo:::get_states_path(stm, node))
 

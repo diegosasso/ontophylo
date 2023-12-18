@@ -28,8 +28,12 @@
 #' tree_list <- hym_stm_amalg$head[1:10]
 #' tree_list <- merge_tree_cat_list(tree_list)
 #' # Calculate hamming distances.
-#' ph <- suppressWarnings(path_hamming_over_trees_KDE(tree_list))
-#' ph
+#' \dontrun{
+#'
+#'   ph <- suppressWarnings(path_hamming_over_trees_KDE(tree_list))
+#'   ph
+#'
+#' }
 #'
 #' @export
 path_hamming_over_trees_KDE <- function(tree.list) {
@@ -67,8 +71,12 @@ path_hamming_over_trees_KDE <- function(tree.list) {
 #' tree <- hym_stm_amalg$head[[1]]
 #' tree <- merge_tree_cat(tree)
 #' # Calculate hamming distances.
-#' ph <- suppressWarnings(path_hamming_over_all_edges(tree))
-#' ph
+#' \dontrun{
+#'
+#'   ph <- suppressWarnings(path_hamming_over_all_edges(tree))
+#'   ph
+#'
+#' }
 #'
 #' @export
 path_hamming_over_all_edges <- function(tree.merge) {

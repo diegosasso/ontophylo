@@ -10,7 +10,7 @@
 #' @format A phylogenetic tree of class "phylo".
 #'
 #' @references Klopfstein, S., Vilhelmsen, L., Heraty, J.M., Sharkey, M. & Ronquist, F. (2013) The hymenopteran tree of life: evidence from protein-coding genes and objectively aligned ribosomal data. PLoS One, 8, e69344.
-#' (\href{https://doi.org/10.1371/journal.pone.0069344}{Read})
+#' (\doi{10.1371/journal.pone.0069344})
 #'
 #' @examples
 #' data(hym_tree)
@@ -29,7 +29,7 @@
 #' @format A data table with 20 rows and 30 columns; each row indicates a species and each column a character.
 #'
 #' @references Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-#' (\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+#' (\doi{10.5281/zenodo.10285424})
 #'
 #' @examples
 #' data(hym_matrix) 
@@ -50,7 +50,7 @@
 #' Rows indicate characters. 
 #'
 #' @references Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-#' (\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+#' (\doi{10.5281/zenodo.10285424})
 #'
 #' @examples
 #' data(hym_annot) 
@@ -67,10 +67,10 @@
 #' @format List containing various ontological relationships and terms.
 #'
 #' @references Tarasov, S., Mikó, I. & Yoder, M.J. (2022) ontoFAST: an r package for interactive and semi-automatic annotation of characters with biological ontologies. Methods in Ecology and Evolution, 13, 324–329.
-#' (\href{https://doi.org/10.1111/2041-210X.13753}{Read})
+#' (\doi{10.1111/2041-210X.13753})
 #'
 #' Yoder MJ, Mikó I, Seltmann KC, Bertone MA, Deans AR. 2010. A Gross Anatomy Ontology for Hymenoptera. PLoS ONE 5 (12): e15991.
-#' (\href{https://doi.org/10.1371/journal.pone.0015991}{Read})
+#' (\doi{10.1371/journal.pone.0015991})
 #'
 #' \href{http://portal.hymao.org/projects/32/public/ontology/}{Hymenoptera Anatomy Ontology Portal}
 #'
@@ -91,7 +91,7 @@
 #' @format List containing 30 objects of class "multiSimmap".
 #'
 #' @references Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-#' (\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+#' (\doi{10.5281/zenodo.10285424})
 #'
 #' @examples
 #' data(hym_stm)
@@ -112,7 +112,7 @@
 #' @format List containing three objects of class "multiPhylo".
 #'
 #' @references Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-#' (\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+#' (\doi{10.5281/zenodo.10285424})
 #'
 #' @examples
 #' data(hym_stm_amalg)
@@ -138,7 +138,7 @@
 #' "Focal.Edge.id", "tree.id", and "tree.tip.id" contain internal ids used by the package functions.
 #'
 #' @references Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-#' (\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+#' (\doi{10.5281/zenodo.10285424})
 #'
 #' @examples
 #' data(hym_hm)
@@ -158,7 +158,7 @@
 #' @format List containing changing times between states for all edges of the tree sample.
 #'
 #' @references Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-#' (\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+#' (\doi{10.5281/zenodo.10285424})
 #'
 #' @examples
 #' data(hym_nhpp)
@@ -181,7 +181,7 @@
 #' @format List containing pNHPP rates estimated for all edges of the tree sample.
 #'
 #' @references Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-#' (\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+#' (\doi{10.5281/zenodo.10285424})
 #'
 #' @examples
 #' data(hym_kde)
@@ -201,10 +201,10 @@
 #' @format An stochastic character map of class "simmap".
 #'
 #' @references Sharkey, M.J., et al. 2011. Phylogenetic relationships among superfamilies of Hymenoptera. Cladistics 28(1), 80-112.
-#' (\href{https://doi.org/10.1111/j.1096-0031.2011.00366.x}{Read})
+#' (\doi{10.1111/j.1096-0031.2011.00366.x})
 #'
 #' Klopfstein, S., Vilhelmsen, L., Heraty, J.M., Sharkey, M. & Ronquist, F. (2013) The hymenopteran tree of life: evidence from protein-coding genes and objectively aligned ribosomal data. PLoS One, 8, e69344.
-#' (\href{https://doi.org/10.1371/journal.pone.0069344}{Read})
+#' (\doi{10.1371/journal.pone.0069344})
 #'
 #' @examples
 #' data(hym_stm_mds)
@@ -243,7 +243,7 @@
 #' @format A data object of class "grImport".
 #'
 #' @references Murrell, P. (2009). Importing vector graphics: The grimport package for r. Journal of Statistical Software, 30:1–37.
-#' (\href{https://doi.org/10.18637/jss.v030.i04}{Read})
+#' (\doi{10.18637/jss.v030.i04})
 #'
 #' @examples
 #' data(hym_img)

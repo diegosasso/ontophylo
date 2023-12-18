@@ -21,8 +21,12 @@ data("hym_stm_amalg")
 tree_list <- hym_stm_amalg$head[1:10]
 tree_list <- merge_tree_cat_list(tree_list)
 # Calculate hamming distances.
-ph <- suppressWarnings(path_hamming_over_trees_KDE(tree_list))
-ph
+\dontrun{
+
+  ph <- suppressWarnings(path_hamming_over_trees_KDE(tree_list))
+  ph
+
+}
 
 }
 \author{

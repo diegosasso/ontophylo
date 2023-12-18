@@ -21,6 +21,6 @@ data(hym_nhpp)
 }
 \references{
 Porto, D.S., Uyeda, J., Mikó, I. & Tarasov, S. (2023) Supporting Data: ontophylo: Reconstructing the evolutionary dynamics of phenomes using new ontology-informed phylogenetic methods.
-(\href{https://dx.doi.org/10.5281/zenodo.10285424}{Read})
+(\doi{10.5281/zenodo.10285424})
 }
 \keyword{datasets}

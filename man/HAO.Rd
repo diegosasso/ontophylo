@@ -18,10 +18,10 @@ data(HAO)
 }
 \references{
 Tarasov, S., Mikó, I. & Yoder, M.J. (2022) ontoFAST: an r package for interactive and semi-automatic annotation of characters with biological ontologies. Methods in Ecology and Evolution, 13, 324–329.
-(\href{https://doi.org/10.1111/2041-210X.13753}{Read})
+(\doi{10.1111/2041-210X.13753})
 
 Yoder MJ, Mikó I, Seltmann KC, Bertone MA, Deans AR. 2010. A Gross Anatomy Ontology for Hymenoptera. PLoS ONE 5 (12): e15991.
-(\href{https://doi.org/10.1371/journal.pone.0015991}{Read})
+(\doi{10.1371/journal.pone.0015991})
 
 \href{http://portal.hymao.org/projects/32/public/ontology/}{Hymenoptera Anatomy Ontology Portal}
 }
