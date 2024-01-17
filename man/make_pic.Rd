@@ -45,11 +45,7 @@ cols_maps <- make_colors_relative_scale(plot_stat, palette = hm.palette(100),
                                         lims = scale_lim)
 # Plot picture.
 new_pic <- make_pic(picture, anat_layers, cols_maps)
-\dontrun{
-
-  grImport::grid.picture(new_pic)
-
-}
+grImport::grid.picture(new_pic)
 
 }
 \author{

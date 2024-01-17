@@ -35,12 +35,8 @@ Function to plot the color scale bar.
 \examples{
 stat <- runif(10, 0.25, 1)
 hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
-\dontrun{
-
-  color.bar(hm.palette(100), min = min(stat), max = max(stat),
-            ticks = round(c(min(stat), max(stat)/2, max(stat)), 2), title = "")
-
-}
+color.bar(hm.palette(100), min = min(stat), max = max(stat),
+          ticks = round(c(min(stat), max(stat)/2, max(stat)), 2), title = "")
 
 }
 \author{

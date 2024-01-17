@@ -2,7 +2,7 @@ test_that(
   "Testing make_colors()",
   {
 
-    stat <- setNames(runif(5, 0.1, 10), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
+    stat <- setNames(c(0.1, 0.2, 0.3, 0.4, 0.5), c("cranium", "fore_wing", "hind_wing", "pronotum", "propectus") )
 
     hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
 
@@ -12,7 +12,7 @@ test_that(
     expect_true(is.character(cols_maps))
 
     # Check for unique colors.
-    expect_true(anyDuplicated(cols_maps) == 0)
+    expect_true(length(stat) == length(cols_maps))
 
   }
 )

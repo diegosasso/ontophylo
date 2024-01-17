@@ -22,13 +22,13 @@ A tree in 'phylip' format.
 Imports stochastic character maps file from RevBayes into R.
 }
 \examples{
-\dontrun{
-
-  stm <- read_Simmap_Rev("revbayes.stm", start = 200, end = 500, save = NULL)
-  stm <- phytools::read.simmap(text = stm, format = "phylip")
-  phytools::plotSimmap(stm[[1]])
-
-}
+rev_stm <- "Iteration\t1\t2\t3\tsimmap\n
+0\t{1,2.0}\t((spp1:{1,4.0:0,4.0},spp2:{1,2.0:0,6.0}):{1,0.5});\n
+1\t{1,2.0}\t((spp1:{1,2.0:0,6.0},spp2:{1,3.0:0,5.0}):{1,0.5});\n
+3\t{1,2.0}\t((spp1:{1,2.0:0,6.0},spp2:{1,3.0:0,5.0}):{1,0.5});"
+stm <- read_Simmap_Rev(textConnection(rev_stm, "r"), start = 0, end = 3, save = NULL)
+stm <- phytools::read.simmap(text = stm, format = "phylip")
+phytools::plotSimmap(stm[[1]])
 
 }
 \author{

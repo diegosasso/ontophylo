@@ -27,11 +27,8 @@ Edge_KDE_stat <- Edge_KDE$loess.lambda.mean
 # Make contmap nhpp data.
 nhpp_map <- make_contMap_KDE(tree_discr, Edge_KDE_stat)
 # Plot contmap.
-\dontrun{
-
-  phytools::plot.contMap(nhpp_map, lwd = 3, outline = F, legend = F, ftype = "off", plot = F)
-
-}
+phytools::plot.contMap(nhpp_map, lwd = 3, outline = FALSE,
+legend = FALSE, ftype = "off", plot = FALSE)
 
 }
 \author{

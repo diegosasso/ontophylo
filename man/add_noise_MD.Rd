@@ -15,21 +15,28 @@ add_noise_MD(MD, add.noise)
 A list of tibbles as in the output of MD_morpho functions, with noise added.
 }
 \description{
-Adds noise to the points in the 2D coordinates in the MDS plot. 
+Adds noise to the points in the 2D coordinates in the MDS plot.
 # The noise is calculated as var(V)*add.noise.
 }
 \examples{
 data("hym_stm_mds")
+# Select a few taxa from main lineages of Hymenoptera.
+tax <- c("Xyela", "Tenthredo", "Orussus", "Pimpla",
+         "Ceraphron", "Evania", "Pison",
+         "Ibalia", "Proctotrupes", "Chiloe") 
+drop_tax <- hym_stm_mds$tip.label[!hym_stm_mds$tip.label \%in\% tax]
+hym_stm_mds <- phytools::drop.tip.simmap(hym_stm_mds, drop_tax)
 # Get a sample of amalgamated stochastic map (phenome).
 tree <- merge_tree_cat(hym_stm_mds)
-\dontrun{
-  
+
+\donttest{
+
   # Multidimensional scaling for an arbitrary tree.
   MD <- suppressWarnings(MultiScale.simmap(tree))
-  
+
   # Add noise.
   add_noise_MD(MD, c(0.3, 0.3))
-  
+
 }
 
 }

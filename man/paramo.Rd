@@ -38,16 +38,12 @@ stm_ms <- tree_list_amalg$mesosoma[[1]]
 # Get one sample of map from metasoma.
 stm_mt <- tree_list_amalg$metasoma[[1]]
 # Plot one amalgamated stochastic map from each anatomical region.
-\dontrun{
-
-  phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd), 
-  lwd = 3, pts = F,ftype = "off")
-  phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms), 
-  lwd = 3, pts = F,ftype = "off")
-  phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt), 
-  lwd = 3, pts = F,ftype = "off")
-
-}
+phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd), 
+lwd = 3, pts = FALSE,ftype = "off")
+phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms), 
+lwd = 3, pts = FALSE,ftype = "off")
+phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt), 
+lwd = 3, pts = FALSE,ftype = "off")
 
 }
 \author{

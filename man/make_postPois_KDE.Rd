@@ -32,11 +32,7 @@ Edge_KDE_stat <- Edge_KDE$Maps.mean.loess.norm
 # Make posterior poisson distribution.
 Edge_KDE$lambda.mean <- make_postPois_KDE(Edge_KDE_stat, lambda_post, lambda.post.stat = "Mean")
 # Check posterior poisson of some arbitrary branch.
-\dontrun{
-
-  plot(density(Edge_KDE$lambda.mean[[5]]), main = "", xlab = "Rates")
-
-}
+plot(density(Edge_KDE$lambda.mean[[5]]), main = "", xlab = "Rates")
 
 }
 \author{

@@ -45,11 +45,7 @@ scale_lim <- range(plot_stat)
 hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
 
 # Plot picture.
-\dontrun{
-
-  anat_plot(picture, anat_layers, plot_stat, hm.palette(100), scale_lim)
-
-}
+anat_plot(picture, anat_layers, plot_stat, hm.palette(100), scale_lim)
 
 }
 \author{

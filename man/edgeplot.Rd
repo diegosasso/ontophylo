@@ -31,11 +31,7 @@ map_stat <- make_contMap_KDE(tree_discr, Edge_KDE_stat)
 # Make edgeplot nhpp data.
 prof_stat <- edge_profiles4plotting(tree_discr, Edge_KDE_stat)
 # Plot.
-\dontrun{
-
-  edgeplot(map_stat, prof_stat)
-
-}
+suppressWarnings(edgeplot(map_stat, prof_stat))
 
 }
 \author{

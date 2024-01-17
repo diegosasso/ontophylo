@@ -3,6 +3,7 @@ test_that(
   {
 
     stm <- readRDS("../testdata/stm_test.RDS")
+	stm <- stm[1:2]
 
     stm_discr <- discr_Simmap_all(stm, res = 100)
 

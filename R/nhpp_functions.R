@@ -27,9 +27,9 @@
 #' # Get ten samples of stochastic maps from head.
 #' tree_list <- hym_stm_amalg$head[1:10]
 #' tree_list <- merge_tree_cat_list(tree_list)
-#' # Calculate hamming distances.
-#' \dontrun{
+#' \donttest{
 #'
+#'   # Calculate hamming distances.
 #'   ph <- suppressWarnings(path_hamming_over_trees_KDE(tree_list))
 #'   ph
 #'
@@ -70,9 +70,9 @@ path_hamming_over_trees_KDE <- function(tree.list) {
 #' # Get one sample of stochastic maps from head.
 #' tree <- hym_stm_amalg$head[[1]]
 #' tree <- merge_tree_cat(tree)
-#' # Calculate hamming distances.
-#' \dontrun{
+#' \donttest{
 #'
+#'   # Calculate hamming distances.
 #'   ph <- suppressWarnings(path_hamming_over_all_edges(tree))
 #'   ph
 #'
@@ -268,7 +268,7 @@ make_data_NHPP_KDE_Markov_kernel <- function(Tb.trees, add.psd = TRUE) {
     dt.out[[i]] <- make_data_NHPP_over_edge_MarkovKDE(Tb.trees, Focal.Edge = i)
 
   }
-  
+
   if (add.psd == TRUE) {dt.out <- lapply(dt.out, function(x) c((-1*x), x) )}
 
   return(dt.out)
@@ -384,7 +384,7 @@ estimate_band_W <- function(tree.discr, data.path, band.width = c('bw.nrd0', 'bw
   i <- 14
   for (i in Edges) {
 
-    cat('Working on edge ', i, ' \n')
+    #cat('Working on edge ', i, ' \n')
     dt <- data.path[[i]]
 
     if (band.width == 'bw.nrd')
@@ -517,7 +517,7 @@ estimate_edge_KDE_Markov_kernel_unnorm <- function(tree.discr, Path.data, h = 10
   Edge <- 1
   for (Edge in 1:nrow(H)) {
 
-    cat('Working on edge ', Edge, ' \n')
+    #cat('Working on edge ', Edge, ' \n')
     X <- age.glob[[Edge]]
     Y <- Path.data[[Edge]]
     #
@@ -624,12 +624,12 @@ loess_smoothing_KDE <- function(tree.discr, Edge.KDE) {
   for (i in Edges) {
 
     #for (i in 105:105){
-    cat('Working on edge ', i, ' \n')
+    #cat('Working on edge ', i, ' \n')
     dt <- tibble(X = age.glob[[i]], Y = Edge.KDE$Maps.mean[[i]])
     #dt <- tibble(X=age.glob[[i]], Y=Edge.KDE[[2]]$Maps.mean[[i]] )
 
     #loessMod <- loess(Y ~ X, data=dt, span=span)
-    #loessMod <- loess.as(dt$X, dt$Y, degree = 1, criterion = c("aicc", "gcv")[2], user.span = NULL, plot = F)
+    #loessMod <- loess.as(dt$X, dt$Y, degree = 1, criterion = c("aicc", "gcv")[2], user.span = NULL, plot = FALSE)
     loessMod <- fANCOVA::loess.as(dt$X, dt$Y, degree = 1,
       criterion = c("aicc", "gcv")[2], user.span = NULL, plot = FALSE,
       control = loess.control(surface = "direct"))
@@ -860,11 +860,7 @@ posterior_lambda_KDE_Distr <- function(tree.list, n.sim = 10, BR.name) {
 #' # Make posterior poisson distribution.
 #' Edge_KDE$lambda.mean <- make_postPois_KDE(Edge_KDE_stat, lambda_post, lambda.post.stat = "Mean")
 #' # Check posterior poisson of some arbitrary branch.
-#' \dontrun{
-#'
-#'   plot(density(Edge_KDE$lambda.mean[[5]]), main = "", xlab = "Rates")
-#'
-#' }
+#' plot(density(Edge_KDE$lambda.mean[[5]]), main = "", xlab = "Rates")
 #'
 #' @export
 make_postPois_KDE <- function(Edge.KDE.stat, lambda.post, lambda.post.stat = 'Mean') {
@@ -1003,11 +999,8 @@ derivative_KDE <- function(tree.discr, Edge.KDE.stat) {
 #' # Make contmap nhpp data.
 #' nhpp_map <- make_contMap_KDE(tree_discr, Edge_KDE_stat)
 #' # Plot contmap.
-#' \dontrun{
-#'
-#'   phytools::plot.contMap(nhpp_map, lwd = 3, outline = F, legend = F, ftype = "off", plot = F)
-#'
-#' }
+#' phytools::plot.contMap(nhpp_map, lwd = 3, outline = FALSE,
+#' legend = FALSE, ftype = "off", plot = FALSE)
 #'
 #' @export
 make_contMap_KDE <- function(tree.discr, Edge.KDE.stat) {
@@ -1274,38 +1267,34 @@ join_edges <- function(tree.discr, edge.profs) {
 #' # Make edgeplot nhpp data.
 #' prof_stat <- edge_profiles4plotting(tree_discr, Edge_KDE_stat)
 #' # Plot.
-#' \dontrun{
-#'
-#'   edgeplot(map_stat, prof_stat)
-#'
-#' }
+#' suppressWarnings(edgeplot(map_stat, prof_stat))
 #'
 #' @export
 edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
-  
+
   # Get tree height.
   Tmax <- max(nodeHeights(map_stat$tree))
-  
+
   if (plot.cont == TRUE) {
-    
+
     # Set plot layout.
     layout(matrix(c(1,2),ncol = 1), heights = c(2,1))
-    
+
     # Plot contmap.
-    plot.contMap(map_stat, lwd = 3, outline = F, legend = F, ftype = "off",
-                 plot = F, mar = c(0.1, 3.45, 0.1, 0.35)) 
-    
+    plot.contMap(map_stat, lwd = 3, outline = FALSE, legend = FALSE, ftype = "off",
+                 plot = FALSE, mar = c(0.1, 3.45, 0.1, 0.35))
+
   }
-  
+
   # Plot edgeplot.
   plot_edgeprof <-
-    
+
     ggplot(data = prof_stat, aes(x = prof_stat$X-Tmax, y =  prof_stat$Y, group = prof_stat$edge.id, color = prof_stat$Y)) +
-    
+
     geom_line(alpha = 1, linewidth = 0.5) +
-    
+
     scale_color_gradientn(colours = rev(rainbow(5, start = 0, end = 0.7)) ) +
-    
+
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
           panel.background = element_rect(fill = "transparent",colour = NA),
           plot.background = element_rect(fill = "transparent",colour = NA),
@@ -1316,19 +1305,19 @@ edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
           axis.text.y = element_text(size = 16),
           plot.margin = unit(c(2.3,0.87,0.1,0.1), 'cm'),
           legend.position = 'none') +
-    
+
     xlab('time') + ylab('rate') +
-    
+
     scale_x_continuous(limits = c(-round(Tmax + 5, 0), 0),
                        breaks = -1*seq(from = 0, to = Tmax, by = Tmax/5) %>% round(0),
                        labels = seq(from = 0, to = Tmax, by = Tmax/5) %>% round(0) ) +
     scale_y_continuous(limits = c(0, round(max(prof_stat$Y)*1.2, 3))) +
     coord_cartesian(expand = FALSE)
-  
+
     vp <- viewport(height = unit(0.5,"npc"), width = unit(1, "npc"), just = c("left",'top'), y = 0.5, x = 0)
-    
+
     print(plot_edgeprof, vp = vp)
-    
+
 }
 
 
@@ -1348,7 +1337,7 @@ edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
 #' @author Diego Porto
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'
 #'   # Load data.
 #'   data("hym_stm", "hym_stm_amalg")
@@ -1357,7 +1346,7 @@ edgeplot <- function(map_stat, prof_stat, plot.cont = TRUE) {
 #'   # Get ten samples of stochastic maps from head.
 #'   tree_list <- hym_stm_amalg$head[1:10]
 #'   # Run the pNHPP method.
-#'   nhpp_test <- pNHPP(tree_list, tree, res = 500, 
+#'   nhpp_test <- pNHPP(tree_list, tree, res = 500,
 #'   add.psd = TRUE, band.width = 'bw.nrd', lambda.post.stat = 'Mean')
 #'
 #' }
@@ -1367,14 +1356,14 @@ pNHPP <- function(stm_amalg, tree = tree, res = res, add.psd = TRUE, band.width 
                   lambda.post.stat = 'Mean') {
 
   # Merge state categories across branches.
-  cat(paste0("\n", "Starting merging state categories: ", Sys.time(), "\n"))
+  #cat(paste0("\n", "Starting merging state categories: ", Sys.time(), "\n"))
   stm_merg <- merge_tree_cat_list(stm_amalg)
-  cat(paste0("\n", "Finished merging state categories: ", Sys.time(), "\n"))
+  #cat(paste0("\n", "Finished merging state categories: ", Sys.time(), "\n"))
 
   # Calculate Hamming distances.
-  cat(paste0("\n", "Starting calculating hamming distances: ", Sys.time(), "\n"))
+  #cat(paste0("\n", "Starting calculating hamming distances: ", Sys.time(), "\n"))
   path_hm <- path_hamming_over_trees_KDE(stm_merg)
-  cat(paste0("\n", "Finished calculating hamming distances: ", Sys.time(), "\n"))
+  #cat(paste0("\n", "Finished calculating hamming distances: ", Sys.time(), "\n"))
 
   # Discretize the reference tree.
   tree_discr <- discr_Simmap(tree, res = res)
@@ -1387,9 +1376,9 @@ pNHPP <- function(stm_amalg, tree = tree, res = res, add.psd = TRUE, band.width 
   bdw <- mean(bdw)
 
   # Kernel Density Estimation (KDE).
-  cat(paste0("\n", "Starting estimating KDEs: ", Sys.time(), "\n"))
+  #cat(paste0("\n", "Starting estimating KDEs: ", Sys.time(), "\n"))
   edge_KDE <- estimate_edge_KDE(tree_discr, Path.data = path_data, h = bdw)
-  cat(paste0("\n", "Finished estimating KDEs: ", Sys.time(), "\n"))
+  #cat(paste0("\n", "Finished estimating KDEs: ", Sys.time(), "\n"))
 
   # Calculate smoothing.
   edge_KDE$Maps.mean.loess <- loess_smoothing_KDE(tree_discr, edge_KDE)

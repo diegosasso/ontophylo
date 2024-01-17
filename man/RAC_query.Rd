@@ -25,6 +25,7 @@ char_info <- hym_annot[1:2]
 # Query for three anatomical regions.
 terms <- c("head", "mesosoma", "metasoma")
 query <- RAC_query(char_info, HAO, terms)
+query 
 
 }
 \author{

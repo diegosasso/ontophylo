@@ -20,9 +20,9 @@ data("hym_stm_amalg")
 # Get ten samples of stochastic maps from head.
 tree_list <- hym_stm_amalg$head[1:10]
 tree_list <- merge_tree_cat_list(tree_list)
-# Calculate hamming distances.
-\dontrun{
+\donttest{
 
+  # Calculate hamming distances.
   ph <- suppressWarnings(path_hamming_over_trees_KDE(tree_list))
   ph
 

@@ -9,7 +9,7 @@ MultiScale.simmap(tree.merge, add.noise = NULL)
 \arguments{
 \item{tree.merge}{simmap object. A stochastic character map after being processed by the discr_Simmap and merge_tree_cat functions.}
 
-\item{add.noise}{numeric. A vector of length 2 or NULL. Indicates if noise should be added or not. Useful if there are many identical states occupying the same points in the 2D coordinates of the morphospace plot. 
+\item{add.noise}{numeric. A vector of length 2 or NULL. Indicates if noise should be added or not. Useful if there are many identical states occupying the same points in the 2D coordinates of the morphospace plot.
 The noise is calculated as var(V)*add.noise.}
 }
 \value{
@@ -20,13 +20,19 @@ Performs multidimensional scaling (MDS) based on hamming distances among charact
 }
 \examples{
 data("hym_stm_mds")
+# Select a few taxa from main lineages of Hymenoptera.
+tax <- c("Xyela", "Tenthredo", "Orussus", "Pimpla",
+         "Ceraphron", "Evania", "Pison",
+         "Ibalia", "Proctotrupes", "Chiloe") 
+drop_tax <- hym_stm_mds$tip.label[!hym_stm_mds$tip.label \%in\% tax]
+hym_stm_mds <- phytools::drop.tip.simmap(hym_stm_mds, drop_tax)
 # Get a sample of amalgamated stochastic map (phenome).
 tree <- merge_tree_cat(hym_stm_mds)
-# Multidimensional scaling for an arbitrary tree.
-\dontrun{
-  
+\donttest{
+
+  # Multidimensional scaling for an arbitrary tree.
   MD <- suppressWarnings(MultiScale.simmap(tree))
-  
+
 }
 
 }

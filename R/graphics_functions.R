@@ -205,12 +205,8 @@ make_colors_relative_scale <- function(Stat, palette, lims) {
 #' @examples
 #' stat <- runif(10, 0.25, 1)
 #' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
-#' \dontrun{
-#' 
-#'   color.bar(hm.palette(100), min = min(stat), max = max(stat),
-#'             ticks = round(c(min(stat), max(stat)/2, max(stat)), 2), title = "")
-#' 
-#' }
+#' color.bar(hm.palette(100), min = min(stat), max = max(stat),
+#'           ticks = round(c(min(stat), max(stat)/2, max(stat)), 2), title = "")
 #'
 #' @export
 color.bar <- function(pal, min, max = -min, nticks = 11, ticks = seq(min, max, len = nticks), title = '') {
@@ -276,11 +272,7 @@ color.bar <- function(pal, min, max = -min, nticks = 11, ticks = seq(min, max, l
 #'                                         lims = scale_lim)
 #' # Plot picture.
 #' new_pic <- make_pic(picture, anat_layers, cols_maps)
-#' \dontrun{
-#' 
-#'   grImport::grid.picture(new_pic)
-#' 
-#' }
+#' grImport::grid.picture(new_pic)
 #'
 #' @export
 make_pic <- function(picture, layers, cols.maps) {
@@ -341,11 +333,7 @@ make_pic <- function(picture, layers, cols.maps) {
 #' hm.palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Spectral"), space = "Lab")
 #'
 #' # Plot picture.
-#' \dontrun{
-#' 
-#'   anat_plot(picture, anat_layers, plot_stat, hm.palette(100), scale_lim)
-#' 
-#' }
+#' anat_plot(picture, anat_layers, plot_stat, hm.palette(100), scale_lim)
 #' 
 #' @export
 anat_plot <- function(picture, anat_layers, plot_stat, color_palette, scale_lim) {

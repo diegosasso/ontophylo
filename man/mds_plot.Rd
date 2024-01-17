@@ -11,16 +11,24 @@ mds_plot(MD, Tslice = max(MD$Points$time))
 
 \item{Tslice}{numeric. The value for the temporal slices to be plotted, from root to tip. For example, if Tslice = 25, then all points in the morphospaces from time 0 (root) to 25 will be plotted.}
 }
+\value{
+An object of class ggplot with the morphospace to be plotted.
+}
 \description{
 Wrapper function for plotting morphospaces obtained using the MultiScale.simmap' function.
 }
 \examples{
-data("hym_stm_mds")
+# Select a few taxa from main lineages of Hymenoptera.
+tax <- c("Xyela", "Tenthredo", "Orussus", "Pimpla",
+         "Ceraphron", "Evania", "Pison",
+         "Ibalia", "Proctotrupes", "Chiloe") 
+drop_tax <- hym_stm_mds$tip.label[!hym_stm_mds$tip.label \%in\% tax]
+hym_stm_mds <- phytools::drop.tip.simmap(hym_stm_mds, drop_tax)
 # Get a sample of amalgamated stochastic map (phenome).
 tree <- merge_tree_cat(hym_stm_mds)
-# Multidimensional scaling for an arbitrary tree.
-\dontrun{
-  
+\donttest{
+ 
+  # Multidimensional scaling for an arbitrary tree.
   MD <- suppressWarnings(MultiScale.simmap(tree))
 
   MD_plot <- mds_plot(MD, Tslice = 10)
@@ -31,7 +39,7 @@ tree <- merge_tree_cat(hym_stm_mds)
   MD_plot
   MD_plot <- mds_plot(MD, Tslice = 280)
   MD_plot
-  
+
 }
 
 }

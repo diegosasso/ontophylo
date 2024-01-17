@@ -22,5 +22,5 @@ https://github.com/diegosasso/ontophylo_tutorials
 
 
 -   Manuscript describing package:
-https://doi.org/10.1101/2023.06.13.544734
+http://doi.org/10.1111/2041-210X.14283
 

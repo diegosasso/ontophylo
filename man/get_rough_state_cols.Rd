@@ -20,12 +20,8 @@ data("hym_stm_amalg")
 # Get one sample of stochastic map from head.
 tree <- hym_stm_amalg$head[[5]]
 # Plot one amalgamated stochastic map from head.
-\dontrun{
-
-  phytools::plotSimmap(tree, get_rough_state_cols(tree), 
-  lwd = 3, pts = F,ftype = "off")
-
-}
+phytools::plotSimmap(tree, get_rough_state_cols(tree), 
+lwd = 3, pts = FALSE,ftype = "off")
 
 }
 \author{

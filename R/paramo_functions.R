@@ -114,6 +114,7 @@ get_descendants_chars <- function(ontology, annotations = "auto", terms, ...) {
 #' # Query for three anatomical regions.
 #' terms <- c("head", "mesosoma", "metasoma")
 #' query <- RAC_query(char_info, HAO, terms)
+#' query 
 #'
 #' @export
 RAC_query <- function(char_info, ONT, terms) {
@@ -129,8 +130,8 @@ RAC_query <- function(char_info, ONT, terms) {
   
   res <- lapply(levelA, function(x) get_descendants_chars(ONT, annotations = "manual", terms = x))
   
-  cat("\nAggregations by :\n")
-  print(res)
+  #cat("\nAggregations by :\n")
+  #print(res)
   
   return(res)
   
@@ -418,12 +419,8 @@ stack2 <- function(x,y) {
 #' tree_list_amalg <- paramo.list(names(tree_list), tree_list, ntrees = 50)
 #' tree_list_amalg <- do.call(c, tree_list_amalg)
 #' # Plot one amalgamated stochastic map.
-#' \dontrun{
-#' 
-#'   phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  
-#'   lwd = 3, pts = F,ftype = "off")
-#' 
-#' }
+#' phytools::plotSimmap(tree_list_amalg[[1]], get_rough_state_cols(tree_list_amalg[[1]]),  
+#' lwd = 3, pts = FALSE,ftype = "off")
 #'
 #' @export
 paramo.list <- function(cc, tree.list, ntrees = 1) {
@@ -482,16 +479,12 @@ paramo.list <- function(cc, tree.list, ntrees = 1) {
 #' # Get one sample of map from metasoma.
 #' stm_mt <- tree_list_amalg$metasoma[[1]]
 #' # Plot one amalgamated stochastic map from each anatomical region.
-#' \dontrun{
-#' 
-#'   phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd), 
-#'   lwd = 3, pts = F,ftype = "off")
-#'   phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms), 
-#'   lwd = 3, pts = F,ftype = "off")
-#'   phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt), 
-#'   lwd = 3, pts = F,ftype = "off")
-#' 
-#' }
+#' phytools::plotSimmap(stm_hd, get_rough_state_cols(stm_hd), 
+#' lwd = 3, pts = FALSE,ftype = "off")
+#' phytools::plotSimmap(stm_ms, get_rough_state_cols(stm_ms), 
+#' lwd = 3, pts = FALSE,ftype = "off")
+#' phytools::plotSimmap(stm_mt, get_rough_state_cols(stm_mt), 
+#' lwd = 3, pts = FALSE,ftype = "off")
 #'
 #' @export
 paramo <- function(rac_query, tree.list, ntrees) {
@@ -533,12 +526,8 @@ paramo <- function(rac_query, tree.list, ntrees) {
 #' # Get one sample of stochastic map from head.
 #' tree <- hym_stm_amalg$head[[5]]
 #' # Plot one amalgamated stochastic map from head.
-#' \dontrun{
-#' 
-#'   phytools::plotSimmap(tree, get_rough_state_cols(tree), 
-#'   lwd = 3, pts = F,ftype = "off")
-#' 
-#' }
+#' phytools::plotSimmap(tree, get_rough_state_cols(tree), 
+#' lwd = 3, pts = FALSE,ftype = "off")
 #'
 #' @export
 get_rough_state_cols <- function(tree) {
@@ -569,13 +558,13 @@ get_rough_state_cols <- function(tree) {
 #' @author Sergei Tarasov
 #'
 #' @examples
-#' \dontrun{
-#'
-#'   stm <- read_Simmap_Rev("revbayes.stm", start = 200, end = 500, save = NULL)
-#'   stm <- phytools::read.simmap(text = stm, format = "phylip")
-#'   phytools::plotSimmap(stm[[1]])
-#'
-#' }
+#' rev_stm <- "Iteration\t1\t2\t3\tsimmap\n
+#' 0\t{1,2.0}\t((spp1:{1,4.0:0,4.0},spp2:{1,2.0:0,6.0}):{1,0.5});\n
+#' 1\t{1,2.0}\t((spp1:{1,2.0:0,6.0},spp2:{1,3.0:0,5.0}):{1,0.5});\n
+#' 3\t{1,2.0}\t((spp1:{1,2.0:0,6.0},spp2:{1,3.0:0,5.0}):{1,0.5});"
+#' stm <- read_Simmap_Rev(textConnection(rev_stm, "r"), start = 0, end = 3, save = NULL)
+#' stm <- phytools::read.simmap(text = stm, format = "phylip")
+#' phytools::plotSimmap(stm[[1]])
 #'
 #' @export
 read_Simmap_Rev <- function(file, start = 1, end = 1, save = NULL) {
@@ -601,8 +590,8 @@ read_Simmap_Rev <- function(file, start = 1, end = 1, save = NULL) {
 
   } else {
 
-    cat(trees, file = save, sep = "\n")
-    print(paste0("Tree(s) are saved to ", save))
+    write(trees, file = save, sep = "\n")
+    #print(paste0("Tree(s) are saved to ", save))
 
   }
 
